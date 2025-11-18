@@ -1,16 +1,22 @@
 # ─── Terraform ──────────────────────────────────────────────
 # Local .terraform directories
+**/.terraform/*
 .terraform/
 
 # State files and backups
 *.tfstate
-*.tfstate.backup
+*.tfstate.*
+*.backup
+terraform.tfstate
+terraform.tfstate.backup
 
 # Crash logs
 crash.log
+crash.*.log
 
 # Terraform plan outputs
 *.tfplan
+plan.out
 
 # Override files (manual edits)
 override.tf
@@ -20,6 +26,7 @@ override.tf.json
 
 # Sensitive variables (keep examples committed)
 *.auto.tfvars
+*.tfvars
 !terraform.tfvars.example
 !*.auto.tfvars.example
 
@@ -27,26 +34,77 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+# Lock file (can be committed for team consistency)
+# .terraform.lock.hcl
+
+# ─── Docker & Build Artifacts ──────────────────────────────
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Build artifacts
+*.zip
+*.tar
+*.gz
+image.tar
+build/
+dist/
+
 # ─── Environment & Secrets ─────────────────────────────────
 # Env files
 .env
 .env.*
+!.env.example
 
 # PEM keys
 *.pem
+*.key
+*.cert
+*.crt
+
+# AWS credentials
+*.aws
 
 # ─── OS & Editor ────────────────────────────────────────────
 # macOS
 .DS_Store
+.AppleDouble
+.LSOverride
 
 # Windows
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
 
 # VSCode
 .vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
 # JetBrains IDEs
 .idea/
+*.iws
+*.iml
+*.ipr
 
 # Vim swap files
 *.swp
+*.swo
+*~
+
+# ─── Application Specific ──────────────────────────────────
+# WordPress (if you have any in your source)
+wp-config.php
+wp-content/uploads/
+wp-content/blogs.dir/
+wp-content/upgrade/
+wp-content/backup-db/
+wp-content/advanced-cache.php
+wp-content/wp-cache-config.php
+
+# Logs
+*.log
+logs/
