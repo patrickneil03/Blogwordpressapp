@@ -1,0 +1,11 @@
+vpc_cidr = "10.0.0.0/16"
+Project = "blog"
+Env     = "dev"
+db_engine_version = "8.0.42"
+db_allocated_storage = 20
+db_instance_class = "db.t3.micro"
+github_owner       = "patrickneil03"
+github_repo        = "Blogwordpressapp"
+github_branch      = "main"
+account_id         = "516969219217"
+region = "ap-southeast-1"

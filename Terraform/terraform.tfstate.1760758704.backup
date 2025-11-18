@@ -1,0 +1,2602 @@
+{
+  "version": 4,
+  "terraform_version": "1.11.4",
+  "serial": 256,
+  "lineage": "304c310c-2bee-46bc-8b2a-d54775c7fb24",
+  "outputs": {},
+  "resources": [
+    {
+      "module": "module.cloudwatch",
+      "mode": "managed",
+      "type": "aws_cloudwatch_metric_alarm",
+      "name": "cpu_high_scale_out",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "actions_enabled": true,
+            "alarm_actions": [
+              "arn:aws:autoscaling:ap-southeast-1:516969219217:scalingPolicy:86ca3fec-33dd-432f-a34a-7f42634d617a:autoScalingGroupName/asg-wordpress-blog:policyName/asg-wordpress-scale-out-cpu"
+            ],
+            "alarm_description": "Scale out when ASG average CPU \u003e 40%.",
+            "alarm_name": "asg-wordpress-cpu-high",
+            "arn": "arn:aws:cloudwatch:ap-southeast-1:516969219217:alarm:asg-wordpress-cpu-high",
+            "comparison_operator": "GreaterThanThreshold",
+            "datapoints_to_alarm": 0,
+            "dimensions": {
+              "AutoScalingGroupName": "asg-wordpress-blog"
+            },
+            "evaluate_low_sample_count_percentiles": "",
+            "evaluation_periods": 2,
+            "extended_statistic": "",
+            "id": "asg-wordpress-cpu-high",
+            "insufficient_data_actions": [],
+            "metric_name": "CPUUtilization",
+            "metric_query": [],
+            "namespace": "AWS/EC2",
+            "ok_actions": [],
+            "period": 60,
+            "region": "ap-southeast-1",
+            "statistic": "Average",
+            "tags": {},
+            "tags_all": {},
+            "threshold": 40,
+            "threshold_metric_id": "",
+            "treat_missing_data": "notBreaching",
+            "unit": ""
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "module.ec2.aws_autoscaling_group.asg_wordpress_blog",
+            "module.ec2.aws_autoscaling_policy.asg_scale_out_cpu",
+            "module.ec2.aws_launch_template.wordpress_blog",
+            "module.ec2.aws_lb_target_group.blog_asg_tg",
+            "module.ec2.aws_security_group.goingtointernet",
+            "module.ec2.data.aws_ssm_parameter.al2023_latest",
+            "module.iam.aws_iam_instance_profile.ec2_blog_profile",
+            "module.iam.aws_iam_role.ec2_blog_role",
+            "module.vpc.aws_subnet.named",
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.cloudwatch",
+      "mode": "managed",
+      "type": "aws_cloudwatch_metric_alarm",
+      "name": "cpu_low_scale_in",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "actions_enabled": true,
+            "alarm_actions": [
+              "arn:aws:autoscaling:ap-southeast-1:516969219217:scalingPolicy:d48631d5-a36d-4fdd-b2c0-33074e706c9c:autoScalingGroupName/asg-wordpress-blog:policyName/asg-wordpress-scale-in-cpu"
+            ],
+            "alarm_description": "Scale in when ASG average CPU \u003c= 40%.",
+            "alarm_name": "asg-wordpress-cpu-low",
+            "arn": "arn:aws:cloudwatch:ap-southeast-1:516969219217:alarm:asg-wordpress-cpu-low",
+            "comparison_operator": "LessThanOrEqualToThreshold",
+            "datapoints_to_alarm": 0,
+            "dimensions": {
+              "AutoScalingGroupName": "asg-wordpress-blog"
+            },
+            "evaluate_low_sample_count_percentiles": "",
+            "evaluation_periods": 5,
+            "extended_statistic": "",
+            "id": "asg-wordpress-cpu-low",
+            "insufficient_data_actions": [],
+            "metric_name": "CPUUtilization",
+            "metric_query": [],
+            "namespace": "AWS/EC2",
+            "ok_actions": [],
+            "period": 60,
+            "region": "ap-southeast-1",
+            "statistic": "Average",
+            "tags": {},
+            "tags_all": {},
+            "threshold": 40,
+            "threshold_metric_id": "",
+            "treat_missing_data": "notBreaching",
+            "unit": ""
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "module.ec2.aws_autoscaling_group.asg_wordpress_blog",
+            "module.ec2.aws_autoscaling_policy.asg_scale_in_cpu",
+            "module.ec2.aws_launch_template.wordpress_blog",
+            "module.ec2.aws_lb_target_group.blog_asg_tg",
+            "module.ec2.aws_security_group.goingtointernet",
+            "module.ec2.data.aws_ssm_parameter.al2023_latest",
+            "module.iam.aws_iam_instance_profile.ec2_blog_profile",
+            "module.iam.aws_iam_role.ec2_blog_role",
+            "module.vpc.aws_subnet.named",
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.ec2",
+      "mode": "data",
+      "type": "aws_ssm_parameter",
+      "name": "al2023_latest",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ssm:ap-southeast-1::parameter/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64",
+            "id": "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64",
+            "insecure_value": "ami-088d74defe9802f14",
+            "name": "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64",
+            "region": "ap-southeast-1",
+            "type": "String",
+            "value": "ami-088d74defe9802f14",
+            "version": 134,
+            "with_decryption": true
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "value"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.ec2",
+      "mode": "managed",
+      "type": "aws_autoscaling_group",
+      "name": "asg_wordpress_blog",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:autoscaling:ap-southeast-1:516969219217:autoScalingGroup:a3980679-689c-4870-85cf-51e79019eae5:autoScalingGroupName/asg-wordpress-blog",
+            "availability_zone_distribution": [
+              {
+                "capacity_distribution_strategy": "balanced-best-effort"
+              }
+            ],
+            "availability_zones": [
+              "ap-southeast-1a",
+              "ap-southeast-1b",
+              "ap-southeast-1c"
+            ],
+            "capacity_rebalance": false,
+            "capacity_reservation_specification": [
+              {
+                "capacity_reservation_preference": "default",
+                "capacity_reservation_target": []
+              }
+            ],
+            "context": "",
+            "default_cooldown": 300,
+            "default_instance_warmup": 0,
+            "desired_capacity": 2,
+            "desired_capacity_type": "",
+            "enabled_metrics": [],
+            "force_delete": false,
+            "force_delete_warm_pool": false,
+            "health_check_grace_period": 300,
+            "health_check_type": "ELB",
+            "id": "asg-wordpress-blog",
+            "ignore_failed_scaling_activities": false,
+            "initial_lifecycle_hook": [],
+            "instance_maintenance_policy": [],
+            "instance_refresh": [],
+            "launch_configuration": "",
+            "launch_template": [
+              {
+                "id": "lt-054fdc8ff5f111e7d",
+                "name": "Wordpress-blog-temp",
+                "version": "$Latest"
+              }
+            ],
+            "load_balancers": [],
+            "max_instance_lifetime": 0,
+            "max_size": 3,
+            "metrics_granularity": "1Minute",
+            "min_elb_capacity": null,
+            "min_size": 1,
+            "mixed_instances_policy": [],
+            "name": "asg-wordpress-blog",
+            "name_prefix": "",
+            "placement_group": "",
+            "predicted_capacity": 0,
+            "protect_from_scale_in": false,
+            "region": "ap-southeast-1",
+            "service_linked_role_arn": "arn:aws:iam::516969219217:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
+            "suspended_processes": [],
+            "tag": [
+              {
+                "key": "Name",
+                "propagate_at_launch": true,
+                "value": "Wordpress-blog-ASG"
+              }
+            ],
+            "target_group_arns": [
+              "arn:aws:elasticloadbalancing:ap-southeast-1:516969219217:targetgroup/blog-asg-tg/94c73ed1afc64817"
+            ],
+            "termination_policies": [],
+            "timeouts": null,
+            "traffic_source": [
+              {
+                "identifier": "arn:aws:elasticloadbalancing:ap-southeast-1:516969219217:targetgroup/blog-asg-tg/94c73ed1afc64817",
+                "type": "elbv2"
+              }
+            ],
+            "vpc_zone_identifier": [
+              "subnet-01a83167340d4462c",
+              "subnet-05cd81fa2f549ce23",
+              "subnet-0b2f32a5ec8730089"
+            ],
+            "wait_for_capacity_timeout": "10m",
+            "wait_for_elb_capacity": null,
+            "warm_pool": [],
+            "warm_pool_size": 0
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiZGVsZXRlIjo2MDAwMDAwMDAwMDAsInVwZGF0ZSI6NjAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "module.ec2.aws_launch_template.wordpress_blog",
+            "module.ec2.aws_lb_target_group.blog_asg_tg",
+            "module.ec2.aws_security_group.goingtointernet",
+            "module.ec2.data.aws_ssm_parameter.al2023_latest",
+            "module.iam.aws_iam_instance_profile.ec2_blog_profile",
+            "module.iam.aws_iam_role.ec2_blog_role",
+            "module.vpc.aws_subnet.named",
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "module": "module.ec2",
+      "mode": "managed",
+      "type": "aws_autoscaling_policy",
+      "name": "asg_scale_in_cpu",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "adjustment_type": "ChangeInCapacity",
+            "arn": "arn:aws:autoscaling:ap-southeast-1:516969219217:scalingPolicy:d48631d5-a36d-4fdd-b2c0-33074e706c9c:autoScalingGroupName/asg-wordpress-blog:policyName/asg-wordpress-scale-in-cpu",
+            "autoscaling_group_name": "asg-wordpress-blog",
+            "cooldown": 300,
+            "enabled": true,
+            "estimated_instance_warmup": 0,
+            "id": "asg-wordpress-scale-in-cpu",
+            "metric_aggregation_type": "",
+            "min_adjustment_magnitude": 0,
+            "name": "asg-wordpress-scale-in-cpu",
+            "policy_type": "SimpleScaling",
+            "predictive_scaling_configuration": [],
+            "region": "ap-southeast-1",
+            "scaling_adjustment": -1,
+            "step_adjustment": [],
+            "target_tracking_configuration": []
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.ec2.aws_autoscaling_group.asg_wordpress_blog",
+            "module.ec2.aws_launch_template.wordpress_blog",
+            "module.ec2.aws_lb_target_group.blog_asg_tg",
+            "module.ec2.aws_security_group.goingtointernet",
+            "module.ec2.data.aws_ssm_parameter.al2023_latest",
+            "module.iam.aws_iam_instance_profile.ec2_blog_profile",
+            "module.iam.aws_iam_role.ec2_blog_role",
+            "module.vpc.aws_subnet.named",
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.ec2",
+      "mode": "managed",
+      "type": "aws_autoscaling_policy",
+      "name": "asg_scale_out_cpu",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "adjustment_type": "ChangeInCapacity",
+            "arn": "arn:aws:autoscaling:ap-southeast-1:516969219217:scalingPolicy:86ca3fec-33dd-432f-a34a-7f42634d617a:autoScalingGroupName/asg-wordpress-blog:policyName/asg-wordpress-scale-out-cpu",
+            "autoscaling_group_name": "asg-wordpress-blog",
+            "cooldown": 300,
+            "enabled": true,
+            "estimated_instance_warmup": 0,
+            "id": "asg-wordpress-scale-out-cpu",
+            "metric_aggregation_type": "",
+            "min_adjustment_magnitude": 0,
+            "name": "asg-wordpress-scale-out-cpu",
+            "policy_type": "SimpleScaling",
+            "predictive_scaling_configuration": [],
+            "region": "ap-southeast-1",
+            "scaling_adjustment": 1,
+            "step_adjustment": [],
+            "target_tracking_configuration": []
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.ec2.aws_autoscaling_group.asg_wordpress_blog",
+            "module.ec2.aws_launch_template.wordpress_blog",
+            "module.ec2.aws_lb_target_group.blog_asg_tg",
+            "module.ec2.aws_security_group.goingtointernet",
+            "module.ec2.data.aws_ssm_parameter.al2023_latest",
+            "module.iam.aws_iam_instance_profile.ec2_blog_profile",
+            "module.iam.aws_iam_role.ec2_blog_role",
+            "module.vpc.aws_subnet.named",
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.ec2",
+      "mode": "managed",
+      "type": "aws_launch_template",
+      "name": "wordpress_blog",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:launch-template/lt-054fdc8ff5f111e7d",
+            "block_device_mappings": [],
+            "capacity_reservation_specification": [],
+            "cpu_options": [],
+            "credit_specification": [],
+            "default_version": 1,
+            "description": "temporary blog template",
+            "disable_api_stop": false,
+            "disable_api_termination": false,
+            "ebs_optimized": "",
+            "enclave_options": [],
+            "hibernation_options": [],
+            "iam_instance_profile": [
+              {
+                "arn": "",
+                "name": "BlogEC2InstanceProfile"
+              }
+            ],
+            "id": "lt-054fdc8ff5f111e7d",
+            "image_id": "ami-088d74defe9802f14",
+            "instance_initiated_shutdown_behavior": "",
+            "instance_market_options": [],
+            "instance_requirements": [],
+            "instance_type": "t2.micro",
+            "kernel_id": "",
+            "key_name": "",
+            "latest_version": 1,
+            "license_specification": [],
+            "maintenance_options": [],
+            "metadata_options": [],
+            "monitoring": [],
+            "name": "Wordpress-blog-temp",
+            "name_prefix": "",
+            "network_interfaces": [
+              {
+                "associate_carrier_ip_address": "",
+                "associate_public_ip_address": "true",
+                "connection_tracking_specification": [],
+                "delete_on_termination": "",
+                "description": "",
+                "device_index": 0,
+                "ena_srd_specification": [],
+                "interface_type": "",
+                "ipv4_address_count": 0,
+                "ipv4_addresses": null,
+                "ipv4_prefix_count": 0,
+                "ipv4_prefixes": null,
+                "ipv6_address_count": 0,
+                "ipv6_addresses": null,
+                "ipv6_prefix_count": 0,
+                "ipv6_prefixes": null,
+                "network_card_index": 0,
+                "network_interface_id": "",
+                "primary_ipv6": "",
+                "private_ip_address": "",
+                "security_groups": [
+                  "sg-04a1f9206175a093e"
+                ],
+                "subnet_id": ""
+              }
+            ],
+            "placement": [],
+            "private_dns_name_options": [],
+            "ram_disk_id": "",
+            "region": "ap-southeast-1",
+            "security_group_names": null,
+            "tag_specifications": [
+              {
+                "resource_type": "instance",
+                "tags": {
+                  "Name": "Wordpress-blog-temp"
+                }
+              }
+            ],
+            "tags": null,
+            "tags_all": {},
+            "update_default_version": null,
+            "user_data": "IyEvYmluL2Jhc2ggLXhlDQoNClJFR0lPTj0iYXAtc291dGhlYXN0LTEiDQoNCiMgLS0tIFJlYWQgdmFsdWVzIGZyb20gU1NNIChldmFsdWF0ZWQgYXQgaW5zdGFuY2UgcnVudGltZSkNCkRCUGFzc3dvcmQ9JChhd3Mgc3NtIGdldC1wYXJhbWV0ZXJzIC0tcmVnaW9uICR7UkVHSU9OfSAtLW5hbWVzIC9CTE9HL1dvcmRwcmVzcy9EQlBhc3N3b3JkIC0td2l0aC1kZWNyeXB0aW9uIC0tcXVlcnkgJ1BhcmFtZXRlcnNbMF0uVmFsdWUnIC0tb3V0cHV0IHRleHQpDQpEQlVzZXI9JChhd3Mgc3NtIGdldC1wYXJhbWV0ZXJzIC0tcmVnaW9uICR7UkVHSU9OfSAtLW5hbWVzIC9CTE9HL1dvcmRwcmVzcy9EQlVzZXIgLS1xdWVyeSAnUGFyYW1ldGVyc1swXS5WYWx1ZScgLS1vdXRwdXQgdGV4dCkNCkRCTmFtZT0kKGF3cyBzc20gZ2V0LXBhcmFtZXRlcnMgLS1yZWdpb24gJHtSRUdJT059IC0tbmFtZXMgL0JMT0cvV29yZHByZXNzL0RCTmFtZSAtLXF1ZXJ5ICdQYXJhbWV0ZXJzWzBdLlZhbHVlJyAtLW91dHB1dCB0ZXh0KQ0KREJFbmRwb2ludD0kKGF3cyBzc20gZ2V0LXBhcmFtZXRlcnMgLS1yZWdpb24gJHtSRUdJT059IC0tbmFtZXMgL0JMT0cvV29yZHByZXNzL0RCRW5kcG9pbnQgLS1xdWVyeSAnUGFyYW1ldGVyc1swXS5WYWx1ZScgLS1vdXRwdXQgdGV4dCkNCkVGU0ZpbGVTeXN0ZW1JRD0kKGF3cyBzc20gZ2V0LXBhcmFtZXRlcnMgLS1yZWdpb24gJHtSRUdJT059IC0tbmFtZXMgL0JMT0cvV29yZHByZXNzL0VGU0ZpbGVTeXN0ZW1JRCAtLXF1ZXJ5ICdQYXJhbWV0ZXJzWzBdLlZhbHVlJyAtLW91dHB1dCB0ZXh0KQ0KQUxCRE5TTmFtZT0kKGF3cyBzc20gZ2V0LXBhcmFtZXRlcnMgLS1yZWdpb24gJHtSRUdJT059IC0tbmFtZXMgL0JMT0cvV29yZHByZXNzL0FMQkROU05hbWUgLS1xdWVyeSAnUGFyYW1ldGVyc1swXS5WYWx1ZScgLS1vdXRwdXQgdGV4dCkNCg0KIyBGYWxsYmFja3MNCkRCTmFtZT0ke0RCTmFtZTotd29yZHByZXNzfQ0KREJVc2VyPSR7REJVc2VyOi13b3JkcHJlc3N9DQpEQlBhc3N3b3JkPSR7REJQYXNzd29yZDotd29yZHByZXNzfQ0KDQojIDEuIEluc3RhbGwgbWluaW1hbCBwYWNrYWdlcw0KZG5mIC15IHVwZGF0ZQ0KZG5mIGluc3RhbGwgLXkgd2dldCBwaHAtbXlzcWxuZCBodHRwZCBwaHAtZnBtIHBocC1teXNxbGkgcGhwLWpzb24gcGhwIHBocC1kZXZlbCBhbWF6b24tZWZzLXV0aWxzIG5mcy11dGlscyBhY2wgcnN5bmMgfHwgdHJ1ZQ0KDQojIDIuIFByZXBhcmUgZGlyZWN0b3JpZXMNCm1rZGlyIC1wIC92YXIvd3d3L2h0bWwNCm1rZGlyIC1wIC9tbnQvZWZzL3dwLWNvbnRlbnQNCm1rZGlyIC1wIC92YXIvcnVuL3BocC1mcG0NCmNob3duIC1SIGFwYWNoZTphcGFjaGUgL3Zhci9ydW4vcGhwLWZwbSB8fCB0cnVlDQoNCiMgMy4gU3RhcnQgc2VydmljZXMgKHBocC1mcG0gZmlyc3QpDQpzeXN0ZW1jdGwgZW5hYmxlIHBocC1mcG0gfHwgdHJ1ZQ0Kc3lzdGVtY3RsIGVuYWJsZSBodHRwZCB8fCB0cnVlDQpzeXN0ZW1jdGwgc3RhcnQgcGhwLWZwbSB8fCB0cnVlDQpzeXN0ZW1jdGwgc3RhcnQgaHR0cGQgfHwgdHJ1ZQ0KDQojIDQuIERvd25sb2FkIFdvcmRQcmVzcyB0byB0ZW1wDQpjZCAvdG1wDQp3Z2V0IC1xIGh0dHBzOi8vd29yZHByZXNzLm9yZy9sYXRlc3QudGFyLmd6IC1PIC90bXAvbGF0ZXN0LnRhci5neiB8fCB0cnVlDQp0YXIgLXp4ZiAvdG1wL2xhdGVzdC50YXIuZ3ogLUMgL3RtcCB8fCB0cnVlDQoNCiMgNS4gTW91bnQgRUZTIHdpdGggcmV0cnkgYW5kIHBvcHVsYXRlIHNhZmVseSB1c2luZyByc3luYw0KaWYgWyAtbiAiJHtFRlNGaWxlU3lzdGVtSUR9IiBdOyB0aGVuDQogIG1rZGlyIC1wIC9tbnQvZWZzL3dwLWNvbnRlbnQNCiAgTU9VTlRfT0s9MA0KICBmb3IgaSBpbiAxIDIgMyA0IDU7IGRvDQogICAgbW91bnQgLXQgZWZzIC1vIHRscyxfbmV0ZGV2ICIke0VGU0ZpbGVTeXN0ZW1JRH06LyIgL21udC9lZnMvd3AtY29udGVudCAmJiBNT1VOVF9PSz0xICYmIGJyZWFrDQogICAgc2xlZXAgNQ0KICBkb25lDQoNCiAgaWYgWyAiJHtNT1VOVF9PS30iIC1lcSAxIF07IHRoZW4NCiAgICAjIFVzZSByc3luYyB0byBjb3B5IGNvbnRlbnRzIHByZXNlcnZpbmcgdHJlZTsgdHJhaWxpbmcgc2xhc2ggb24gc291cmNlIG1hdHRlcnMNCiAgICByc3luYyAtYSAtLWRlbGV0ZSAvdG1wL3dvcmRwcmVzcy93cC1jb250ZW50LyAvbW50L2Vmcy93cC1jb250ZW50LyB8fCB0cnVlDQoNCiAgICAjIE51bWVyaWMgb3duZXJzaGlwIGZpeCBmb3IgTkZTL0VGUw0KICAgIEFQQUNIRV9VSUQ9JChpZCAtdSBhcGFjaGUgMj4vZGV2L251bGwgfHwgZWNobyA0OCkNCiAgICBBUEFDSEVfR0lEPSQoaWQgLWcgYXBhY2hlIDI+L2Rldi9udWxsIHx8IGVjaG8gNDgpDQogICAgY2hvd24gLVIgJHtBUEFDSEVfVUlEfToke0FQQUNIRV9HSUR9IC9tbnQvZWZzL3dwLWNvbnRlbnQgfHwgdHJ1ZQ0KDQogICAgIyBQZXJtaXNzaW9ucyBhbmQgQUNMcw0KICAgIGZpbmQgL21udC9lZnMvd3AtY29udGVudCAtdHlwZSBkIC1leGVjIGNobW9kIDc1NSB7fSBcOyB8fCB0cnVlDQogICAgZmluZCAvbW50L2Vmcy93cC1jb250ZW50IC10eXBlIGYgLWV4ZWMgY2htb2QgNjQ0IHt9IFw7IHx8IHRydWUNCiAgICBjaG1vZCA3NzUgL21udC9lZnMvd3AtY29udGVudC91cGxvYWRzIHx8IHRydWUNCiAgICBzZXRmYWNsIC1SIC1tIHU6YXBhY2hlOnJ4IC9tbnQvZWZzL3dwLWNvbnRlbnQgfHwgdHJ1ZQ0KICAgIHNldGZhY2wgLVIgLW0gZDp1OmFwYWNoZTpyeCAvbW50L2Vmcy93cC1jb250ZW50IHx8IHRydWUNCg0KICAgICMgU0VMaW51eCBjb250ZXh0IGlmIHRvb2wgcHJlc2VudA0KICAgIGlmIGNvbW1hbmQgLXYgc2VtYW5hZ2UgPi9kZXYvbnVsbCAyPiYxOyB0aGVuDQogICAgICBzZW1hbmFnZSBmY29udGV4dCAtYSAtdCBodHRwZF9zeXNfcndfY29udGVudF90ICIvbW50L2Vmcy93cC1jb250ZW50KC8uKik/IiB8fCB0cnVlDQogICAgICByZXN0b3JlY29uIC1SdiAvbW50L2Vmcy93cC1jb250ZW50IHx8IHRydWUNCiAgICBmaQ0KDQogICAgdG91Y2ggL21udC9lZnMvd3AtY29udGVudC8uaW5pdGlhbGl6ZWQgfHwgdHJ1ZQ0KDQogICAgIyBjcmVhdGUgc3ltbGluayBvbmx5IGFmdGVyIHBvcHVsYXRpb24NCiAgICBybSAtcmYgL3Zhci93d3cvaHRtbC93cC1jb250ZW50IHx8IHRydWUNCiAgICBsbiAtc2YgL21udC9lZnMvd3AtY29udGVudCAvdmFyL3d3dy9odG1sL3dwLWNvbnRlbnQNCiAgICBjaG93biAtaCAke0FQQUNIRV9VSUR9OiR7QVBBQ0hFX0dJRH0gL3Zhci93d3cvaHRtbC93cC1jb250ZW50IHx8IHRydWUNCiAgZWxzZQ0KICAgIGVjaG8gIkVGUyBtb3VudCBmYWlsZWQ7IGZhbGxiYWNrIHRvIGxvY2FsIGNvcHkiDQogICAgbWtkaXIgLXAgL3Zhci93d3cvaHRtbC93cC1jb250ZW50DQogICAgcnN5bmMgLWEgL3RtcC93b3JkcHJlc3Mvd3AtY29udGVudC8gL3Zhci93d3cvaHRtbC93cC1jb250ZW50LyB8fCB0cnVlDQogICAgY2hvd24gLVIgYXBhY2hlOmFwYWNoZSAvdmFyL3d3dy9odG1sL3dwLWNvbnRlbnQgfHwgdHJ1ZQ0KICAgIGZpbmQgL3Zhci93d3cvaHRtbC93cC1jb250ZW50IC10eXBlIGQgLWV4ZWMgY2htb2QgNzU1IHt9IFw7IHx8IHRydWUNCiAgICBmaW5kIC92YXIvd3d3L2h0bWwvd3AtY29udGVudCAtdHlwZSBmIC1leGVjIGNobW9kIDY0NCB7fSBcOyB8fCB0cnVlDQogIGZpDQplbHNlDQogIHJzeW5jIC1hIC90bXAvd29yZHByZXNzL3dwLWNvbnRlbnQvIC92YXIvd3d3L2h0bWwvd3AtY29udGVudC8gfHwgdHJ1ZQ0KICBjaG93biAtUiBhcGFjaGU6YXBhY2hlIC92YXIvd3d3L2h0bWwvd3AtY29udGVudCB8fCB0cnVlDQpmaQ0KDQojIDYuIENvcHkgY29yZSBXb3JkUHJlc3MgZmlsZXMgaW50byB3ZWJyb290IChub24gd3AtY29udGVudCkNCnJzeW5jIC1hIC90bXAvd29yZHByZXNzLyAvdmFyL3d3dy9odG1sLyAtLWV4Y2x1ZGU9d3AtY29udGVudCB8fCB0cnVlDQpjaG93biAtUiBhcGFjaGU6YXBhY2hlIC92YXIvd3d3L2h0bWwgfHwgdHJ1ZQ0KZmluZCAvdmFyL3d3dy9odG1sIC10eXBlIGQgLWV4ZWMgY2htb2QgNzU1IHt9IFw7IHx8IHRydWUNCmZpbmQgL3Zhci93d3cvaHRtbCAtdHlwZSBmIC1leGVjIGNobW9kIDY0NCB7fSBcOyB8fCB0cnVlDQoNCiMgNy4gQ29uZmlndXJlIHdwLWNvbmZpZy5waHAgKG9ubHkgaWYgbWlzc2luZykNCmNkIC92YXIvd3d3L2h0bWwNCmlmIFsgISAtZiB3cC1jb25maWcucGhwIF07IHRoZW4NCiAgY3Agd3AtY29uZmlnLXNhbXBsZS5waHAgd3AtY29uZmlnLnBocCB8fCB0cnVlDQogIHNlZCAtaSAicy9kYXRhYmFzZV9uYW1lX2hlcmUvJHtEQk5hbWV9L2ciIHdwLWNvbmZpZy5waHAgfHwgdHJ1ZQ0KICBzZWQgLWkgInMvdXNlcm5hbWVfaGVyZS8ke0RCVXNlcn0vZyIgd3AtY29uZmlnLnBocCB8fCB0cnVlDQogIHNlZCAtaSAicy9wYXNzd29yZF9oZXJlLyR7REJQYXNzd29yZH0vZyIgd3AtY29uZmlnLnBocCB8fCB0cnVlDQogIGlmIFsgLW4gIiR7REJFbmRwb2ludH0iIF07IHRoZW4NCiAgICBzZWQgLWkgInMvbG9jYWxob3N0LyR7REJFbmRwb2ludH0vZyIgd3AtY29uZmlnLnBocCB8fCB0cnVlDQogIGZpDQogIGlmIFsgLW4gIiR7QUxCRE5TTmFtZX0iIF07IHRoZW4NCiAgICBlY2hvICJkZWZpbmUoJ1dQX0hPTUUnLCdodHRwOi8vJHtBTEJETlNOYW1lfScpOyIgPj4gd3AtY29uZmlnLnBocCB8fCB0cnVlDQogICAgZWNobyAiZGVmaW5lKCdXUF9TSVRFVVJMJywnaHR0cDovLyR7QUxCRE5TTmFtZX0nKTsiID4+IHdwLWNvbmZpZy5waHAgfHwgdHJ1ZQ0KICBmaQ0KICBjaG1vZCA2NDAgd3AtY29uZmlnLnBocCB8fCB0cnVlDQogIGNob3duIGFwYWNoZTphcGFjaGUgd3AtY29uZmlnLnBocCB8fCB0cnVlDQpmaQ0KDQojIDguIEVuc3VyZSBBbGxvd092ZXJyaWRlIGFuZCBoZWFsdGggZW5kcG9pbnQNCnNlZCAtaSAnLzxEaXJlY3RvcnkgIlwvdmFyXC93d3dcL2h0bWwiPi8sLzxcL0RpcmVjdG9yeT4vIHMvQWxsb3dPdmVycmlkZSBOb25lL0FsbG93T3ZlcnJpZGUgQWxsLycgL2V0Yy9odHRwZC9jb25mL2h0dHBkLmNvbmYgfHwgdHJ1ZQ0KZWNobyAiSGVhbHRoeSIgPiAvdmFyL3d3dy9odG1sL2hlYWx0aC5odG1sIHx8IHRydWUNCmNob3duIGFwYWNoZTphcGFjaGUgL3Zhci93d3cvaHRtbC9oZWFsdGguaHRtbCB8fCB0cnVlDQpjaG1vZCA2NDQgL3Zhci93d3cvaHRtbC9oZWFsdGguaHRtbCB8fCB0cnVlDQoNCiMgOS4gRmluYWwgcGVybWlzc2lvbnMgYW5kIHJlc3RhcnQgaW4gc2FmZSBvcmRlcg0KdXNlcm1vZCAtYSAtRyBhcGFjaGUgZWMyLXVzZXIgfHwgdHJ1ZQ0KY2hvd24gLVIgYXBhY2hlOmFwYWNoZSAvdmFyL3d3dy9odG1sIHx8IHRydWUNCmZpbmQgL3Zhci93d3cvaHRtbCAtdHlwZSBkIC1leGVjIGNobW9kIDc1NSB7fSBcOyB8fCB0cnVlDQpmaW5kIC92YXIvd3d3L2h0bWwgLXR5cGUgZiAtZXhlYyBjaG1vZCA2NDQge30gXDsgfHwgdHJ1ZQ0KDQpzeXN0ZW1jdGwgZGFlbW9uLXJlbG9hZCB8fCB0cnVlDQpzeXN0ZW1jdGwgcmVzdGFydCBwaHAtZnBtIHx8IHRydWUNCnNsZWVwIDINCnN5c3RlbWN0bCByZXN0YXJ0IGh0dHBkIHx8IHRydWUNCg0KIyAxMC4gRGVidWcgbG9ncw0KZWNobyAiPT09IEVGUyAvd3AtY29udGVudCBsaXN0aW5nID09PSINCmxzIC1sYSAvbW50L2Vmcy93cC1jb250ZW50LyB8fCB0cnVlDQplY2hvICI9PT0gd2Vicm9vdCB3cC1jb250ZW50IHN5bWxpbmsgPT09Ig0KbHMgLWxhIC92YXIvd3d3L2h0bWwvd3AtY29udGVudCB8fCB0cnVlDQplY2hvICI9PT0gdGhlbWUgbGlzdGluZyA9PT0iDQpscyAtbGEgL3Zhci93d3cvaHRtbC93cC1jb250ZW50L3RoZW1lcyB8IGhlYWQgLW4gMjAgfHwgdHJ1ZQ0KDQojIGNsZWFudXANCnJtIC1mIC90bXAvbGF0ZXN0LnRhci5neiB8fCB0cnVlDQpybSAtcmYgL3RtcC93b3JkcHJlc3MgfHwgdHJ1ZQ0KDQplY2hvICJCb290c3RyYXAgY29tcGxldGUiDQo=",
+            "vpc_security_group_ids": null
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "image_id"
+              }
+            ]
+          ],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "module.ec2.aws_security_group.goingtointernet",
+            "module.ec2.data.aws_ssm_parameter.al2023_latest",
+            "module.iam.aws_iam_instance_profile.ec2_blog_profile",
+            "module.iam.aws_iam_role.ec2_blog_role",
+            "module.vpc.aws_vpc.blog_vpc"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "module": "module.ec2",
+      "mode": "managed",
+      "type": "aws_lb",
+      "name": "blogwordpressALB",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "access_logs": [
+              {
+                "bucket": "",
+                "enabled": false,
+                "prefix": ""
+              }
+            ],
+            "arn": "arn:aws:elasticloadbalancing:ap-southeast-1:516969219217:loadbalancer/app/blogwordpressALB/b83da54cf27da691",
+            "arn_suffix": "app/blogwordpressALB/b83da54cf27da691",
+            "client_keep_alive": 3600,
+            "connection_logs": [
+              {
+                "bucket": "",
+                "enabled": false,
+                "prefix": ""
+              }
+            ],
+            "customer_owned_ipv4_pool": "",
+            "desync_mitigation_mode": "defensive",
+            "dns_name": "blogwordpressALB-1713581403.ap-southeast-1.elb.amazonaws.com",
+            "dns_record_client_routing_policy": null,
+            "drop_invalid_header_fields": false,
+            "enable_cross_zone_load_balancing": true,
+            "enable_deletion_protection": false,
+            "enable_http2": true,
+            "enable_tls_version_and_cipher_suite_headers": false,
+            "enable_waf_fail_open": false,
+            "enable_xff_client_port": false,
+            "enable_zonal_shift": false,
+            "enforce_security_group_inbound_rules_on_private_link_traffic": "",
+            "id": "arn:aws:elasticloadbalancing:ap-southeast-1:516969219217:loadbalancer/app/blogwordpressALB/b83da54cf27da691",
+            "idle_timeout": 60,
+            "internal": false,
+            "ip_address_type": "ipv4",
+            "ipam_pools": [],
+            "load_balancer_type": "application",
+            "minimum_load_balancer_capacity": [],
+            "name": "blogwordpressALB",
+            "name_prefix": "",
+            "preserve_host_header": false,
+            "region": "ap-southeast-1",
+            "secondary_ips_auto_assigned_per_subnet": null,
+            "security_groups": [
+              "sg-0560c741437db1ae6"
+            ],
+            "subnet_mapping": [
+              {
+                "allocation_id": "",
+                "ipv6_address": "",
+                "outpost_id": "",
+                "private_ipv4_address": "",
+                "subnet_id": "subnet-01a83167340d4462c"
+              },
+              {
+                "allocation_id": "",
+                "ipv6_address": "",
+                "outpost_id": "",
+                "private_ipv4_address": "",
+                "subnet_id": "subnet-05cd81fa2f549ce23"
+              },
+              {
+                "allocation_id": "",
+                "ipv6_address": "",
+                "outpost_id": "",
+                "private_ipv4_address": "",
+                "subnet_id": "subnet-0b2f32a5ec8730089"
+              }
+            ],
+            "subnets": [
+              "subnet-01a83167340d4462c",
+              "subnet-05cd81fa2f549ce23",
+              "subnet-0b2f32a5ec8730089"
+            ],
+            "tags": {
+              "Name": "blogwordpressALB"
+            },
+            "tags_all": {
+              "Name": "blogwordpressALB"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0606a85b56b1ea1e1",
+            "xff_header_processing_mode": "append",
+            "zone_id": "Z1LMS91P8CMLE5"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.ec2.aws_security_group.load_balancer",
+            "module.vpc.aws_subnet.named",
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.ec2",
+      "mode": "managed",
+      "type": "aws_lb_listener",
+      "name": "http",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "alpn_policy": null,
+            "arn": "arn:aws:elasticloadbalancing:ap-southeast-1:516969219217:listener/app/blogwordpressALB/b83da54cf27da691/c9df3739ac792093",
+            "certificate_arn": null,
+            "default_action": [
+              {
+                "authenticate_cognito": [],
+                "authenticate_oidc": [],
+                "fixed_response": [],
+                "forward": [],
+                "order": 1,
+                "redirect": [],
+                "target_group_arn": "arn:aws:elasticloadbalancing:ap-southeast-1:516969219217:targetgroup/blog-asg-tg/94c73ed1afc64817",
+                "type": "forward"
+              }
+            ],
+            "id": "arn:aws:elasticloadbalancing:ap-southeast-1:516969219217:listener/app/blogwordpressALB/b83da54cf27da691/c9df3739ac792093",
+            "load_balancer_arn": "arn:aws:elasticloadbalancing:ap-southeast-1:516969219217:loadbalancer/app/blogwordpressALB/b83da54cf27da691",
+            "mutual_authentication": [],
+            "port": 80,
+            "protocol": "HTTP",
+            "region": "ap-southeast-1",
+            "routing_http_request_x_amzn_mtls_clientcert_header_name": null,
+            "routing_http_request_x_amzn_mtls_clientcert_issuer_header_name": null,
+            "routing_http_request_x_amzn_mtls_clientcert_leaf_header_name": null,
+            "routing_http_request_x_amzn_mtls_clientcert_serial_number_header_name": null,
+            "routing_http_request_x_amzn_mtls_clientcert_subject_header_name": null,
+            "routing_http_request_x_amzn_mtls_clientcert_validity_header_name": null,
+            "routing_http_request_x_amzn_tls_cipher_suite_header_name": null,
+            "routing_http_request_x_amzn_tls_version_header_name": null,
+            "routing_http_response_access_control_allow_credentials_header_value": "",
+            "routing_http_response_access_control_allow_headers_header_value": "",
+            "routing_http_response_access_control_allow_methods_header_value": "",
+            "routing_http_response_access_control_allow_origin_header_value": "",
+            "routing_http_response_access_control_expose_headers_header_value": "",
+            "routing_http_response_access_control_max_age_header_value": "",
+            "routing_http_response_content_security_policy_header_value": "",
+            "routing_http_response_server_enabled": true,
+            "routing_http_response_strict_transport_security_header_value": "",
+            "routing_http_response_x_content_type_options_header_value": "",
+            "routing_http_response_x_frame_options_header_value": "",
+            "ssl_policy": "",
+            "tags": {},
+            "tags_all": {},
+            "tcp_idle_timeout_seconds": null,
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsInVwZGF0ZSI6MzAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "module.ec2.aws_lb.blogwordpressALB",
+            "module.ec2.aws_lb_target_group.blog_asg_tg",
+            "module.ec2.aws_security_group.load_balancer",
+            "module.vpc.aws_subnet.named",
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.ec2",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "efs",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:security-group/sg-0f27c8b32f9308778",
+            "description": "Allow NFS access only from web servers",
+            "egress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "id": "sg-0f27c8b32f9308778",
+            "ingress": [
+              {
+                "cidr_blocks": [],
+                "description": "Allow web servers to connect to EFS",
+                "from_port": 2049,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [
+                  "sg-04a1f9206175a093e"
+                ],
+                "self": false,
+                "to_port": 2049
+              }
+            ],
+            "name": "efs-sg",
+            "name_prefix": "",
+            "owner_id": "516969219217",
+            "region": "ap-southeast-1",
+            "revoke_rules_on_delete": false,
+            "tags": {},
+            "tags_all": {},
+            "timeouts": null,
+            "vpc_id": "vpc-0606a85b56b1ea1e1"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "module.ec2.aws_security_group.goingtointernet",
+            "module.vpc.aws_vpc.blog_vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.ec2",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "goingtointernet",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:security-group/sg-04a1f9206175a093e",
+            "description": "Allow outbound HTTP and ICMP to the internet",
+            "egress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "id": "sg-04a1f9206175a093e",
+            "ingress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "Allow inbound SSH",
+                "from_port": 22,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 22
+              },
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "Allow outbound HTTP",
+                "from_port": 443,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 443
+              },
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "Allow outbound HTTP",
+                "from_port": 80,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 80
+              },
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "Allow outbound ICMP",
+                "from_port": -1,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "icmp",
+                "security_groups": [],
+                "self": false,
+                "to_port": -1
+              }
+            ],
+            "name": "goingtointernet",
+            "name_prefix": "",
+            "owner_id": "516969219217",
+            "region": "ap-southeast-1",
+            "revoke_rules_on_delete": false,
+            "tags": {},
+            "tags_all": {},
+            "timeouts": null,
+            "vpc_id": "vpc-0606a85b56b1ea1e1"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "module.vpc.aws_vpc.blog_vpc"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "module": "module.ec2",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "load_balancer",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:security-group/sg-0560c741437db1ae6",
+            "description": "Allow inbound HTTP/HTTPS from anywhere",
+            "egress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "id": "sg-0560c741437db1ae6",
+            "ingress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "Allow inbound HTTP",
+                "from_port": 80,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 80
+              }
+            ],
+            "name": "load-balancer-sg",
+            "name_prefix": "",
+            "owner_id": "516969219217",
+            "region": "ap-southeast-1",
+            "revoke_rules_on_delete": false,
+            "tags": {},
+            "tags_all": {},
+            "timeouts": null,
+            "vpc_id": "vpc-0606a85b56b1ea1e1"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "module.vpc.aws_vpc.blog_vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.ec2",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "rds",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:security-group/sg-05519907a950bd40c",
+            "description": "Allow DB access only from web servers",
+            "egress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "id": "sg-05519907a950bd40c",
+            "ingress": [
+              {
+                "cidr_blocks": [],
+                "description": "Allow web servers to connect to RDS Instance",
+                "from_port": 3306,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [
+                  "sg-04a1f9206175a093e"
+                ],
+                "self": false,
+                "to_port": 3306
+              }
+            ],
+            "name": "rds-sg",
+            "name_prefix": "",
+            "owner_id": "516969219217",
+            "region": "ap-southeast-1",
+            "revoke_rules_on_delete": false,
+            "tags": {},
+            "tags_all": {},
+            "timeouts": null,
+            "vpc_id": "vpc-0606a85b56b1ea1e1"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "module.ec2.aws_security_group.goingtointernet",
+            "module.vpc.aws_vpc.blog_vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.efs",
+      "mode": "managed",
+      "type": "aws_efs_backup_policy",
+      "name": "blog_efs_backup_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "backup_policy": [
+              {
+                "status": "ENABLED"
+              }
+            ],
+            "file_system_id": "fs-0babb95bec76c5480",
+            "id": "fs-0babb95bec76c5480",
+            "region": "ap-southeast-1"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.efs.aws_efs_file_system.blog_efs"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.efs",
+      "mode": "managed",
+      "type": "aws_efs_file_system",
+      "name": "blog_efs",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:elasticfilesystem:ap-southeast-1:516969219217:file-system/fs-0babb95bec76c5480",
+            "availability_zone_id": "",
+            "availability_zone_name": "",
+            "creation_token": "terraform-20251012064612879600000001",
+            "dns_name": "fs-0babb95bec76c5480.efs.ap-southeast-1.amazonaws.com",
+            "encrypted": false,
+            "id": "fs-0babb95bec76c5480",
+            "kms_key_id": "",
+            "lifecycle_policy": [
+              {
+                "transition_to_archive": "",
+                "transition_to_ia": "AFTER_30_DAYS",
+                "transition_to_primary_storage_class": ""
+              }
+            ],
+            "name": "blog-efs",
+            "number_of_mount_targets": 3,
+            "owner_id": "516969219217",
+            "performance_mode": "generalPurpose",
+            "protection": [
+              {
+                "replication_overwrite": "ENABLED"
+              }
+            ],
+            "provisioned_throughput_in_mibps": 0,
+            "region": "ap-southeast-1",
+            "size_in_bytes": [
+              {
+                "value": 16877568,
+                "value_in_ia": 0,
+                "value_in_standard": 16877568
+              }
+            ],
+            "tags": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "blog-efs",
+              "Project": "blog"
+            },
+            "tags_all": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "blog-efs",
+              "Project": "blog"
+            },
+            "throughput_mode": "bursting"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.efs",
+      "mode": "managed",
+      "type": "aws_efs_mount_target",
+      "name": "blog_mount_targets",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": "App-subnet-A",
+          "schema_version": 0,
+          "attributes": {
+            "availability_zone_id": "apse1-az2",
+            "availability_zone_name": "ap-southeast-1a",
+            "dns_name": "fs-0babb95bec76c5480.efs.ap-southeast-1.amazonaws.com",
+            "file_system_arn": "arn:aws:elasticfilesystem:ap-southeast-1:516969219217:file-system/fs-0babb95bec76c5480",
+            "file_system_id": "fs-0babb95bec76c5480",
+            "id": "fsmt-04fa6b693edcb80fe",
+            "ip_address": "10.0.56.81",
+            "ip_address_type": "IPV4_ONLY",
+            "ipv6_address": "",
+            "mount_target_dns_name": "ap-southeast-1a.fs-0babb95bec76c5480.efs.ap-southeast-1.amazonaws.com",
+            "network_interface_id": "eni-00fd5629f3fd5f0b5",
+            "owner_id": "516969219217",
+            "region": "ap-southeast-1",
+            "security_groups": [
+              "sg-0f27c8b32f9308778"
+            ],
+            "subnet_id": "subnet-0b2508bb6c361ca43",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjYwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.ec2.aws_security_group.efs",
+            "module.ec2.aws_security_group.goingtointernet",
+            "module.efs.aws_efs_file_system.blog_efs",
+            "module.vpc.aws_subnet.named",
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ]
+        },
+        {
+          "index_key": "App-subnet-B",
+          "schema_version": 0,
+          "attributes": {
+            "availability_zone_id": "apse1-az1",
+            "availability_zone_name": "ap-southeast-1b",
+            "dns_name": "fs-0babb95bec76c5480.efs.ap-southeast-1.amazonaws.com",
+            "file_system_arn": "arn:aws:elasticfilesystem:ap-southeast-1:516969219217:file-system/fs-0babb95bec76c5480",
+            "file_system_id": "fs-0babb95bec76c5480",
+            "id": "fsmt-0652e29ddde942391",
+            "ip_address": "10.0.73.39",
+            "ip_address_type": "IPV4_ONLY",
+            "ipv6_address": "",
+            "mount_target_dns_name": "ap-southeast-1b.fs-0babb95bec76c5480.efs.ap-southeast-1.amazonaws.com",
+            "network_interface_id": "eni-0cd33c4dc8ee60113",
+            "owner_id": "516969219217",
+            "region": "ap-southeast-1",
+            "security_groups": [
+              "sg-0f27c8b32f9308778"
+            ],
+            "subnet_id": "subnet-0309ef42f195495e2",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjYwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.ec2.aws_security_group.efs",
+            "module.ec2.aws_security_group.goingtointernet",
+            "module.efs.aws_efs_file_system.blog_efs",
+            "module.vpc.aws_subnet.named",
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ]
+        },
+        {
+          "index_key": "App-subnet-C",
+          "schema_version": 0,
+          "attributes": {
+            "availability_zone_id": "apse1-az3",
+            "availability_zone_name": "ap-southeast-1c",
+            "dns_name": "fs-0babb95bec76c5480.efs.ap-southeast-1.amazonaws.com",
+            "file_system_arn": "arn:aws:elasticfilesystem:ap-southeast-1:516969219217:file-system/fs-0babb95bec76c5480",
+            "file_system_id": "fs-0babb95bec76c5480",
+            "id": "fsmt-0b6e80e0d8d59f2f9",
+            "ip_address": "10.0.87.210",
+            "ip_address_type": "IPV4_ONLY",
+            "ipv6_address": "",
+            "mount_target_dns_name": "ap-southeast-1c.fs-0babb95bec76c5480.efs.ap-southeast-1.amazonaws.com",
+            "network_interface_id": "eni-00f8c547959dfec63",
+            "owner_id": "516969219217",
+            "region": "ap-southeast-1",
+            "security_groups": [
+              "sg-0f27c8b32f9308778"
+            ],
+            "subnet_id": "subnet-021e3fb3bb43cf9d1",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjYwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.ec2.aws_security_group.efs",
+            "module.ec2.aws_security_group.goingtointernet",
+            "module.efs.aws_efs_file_system.blog_efs",
+            "module.vpc.aws_subnet.named",
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.iam",
+      "mode": "managed",
+      "type": "aws_iam_instance_profile",
+      "name": "ec2_blog_profile",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::516969219217:instance-profile/BlogEC2InstanceProfile",
+            "create_date": "2025-10-04T08:45:52Z",
+            "id": "BlogEC2InstanceProfile",
+            "name": "BlogEC2InstanceProfile",
+            "name_prefix": "",
+            "path": "/",
+            "role": "BlogEC2Role",
+            "tags": {},
+            "tags_all": {},
+            "unique_id": "AIPAXQXOEISIWA7G2NTQ2"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.iam.aws_iam_role.ec2_blog_role"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "module": "module.iam",
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "ec2_blog_role",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::516969219217:role/BlogEC2Role",
+            "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ec2.amazonaws.com\"}}],\"Version\":\"2012-10-17\"}",
+            "create_date": "2025-10-04T08:45:50Z",
+            "description": "",
+            "force_detach_policies": false,
+            "id": "BlogEC2Role",
+            "inline_policy": [],
+            "managed_policy_arns": [
+              "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess",
+              "arn:aws:iam::aws:policy/AmazonSSMFullAccess",
+              "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+            ],
+            "max_session_duration": 3600,
+            "name": "BlogEC2Role",
+            "name_prefix": "",
+            "path": "/",
+            "permissions_boundary": "",
+            "tags": {
+              "Project": "BLOG"
+            },
+            "tags_all": {
+              "Project": "BLOG"
+            },
+            "unique_id": "AROAXQXOEISITBID6NFHM"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "module": "module.iam",
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "cw_attach",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "BlogEC2Role/arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
+            "policy_arn": "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
+            "role": "BlogEC2Role"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.iam.aws_iam_role.ec2_blog_role"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.iam",
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "efs_attach",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "BlogEC2Role/arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess",
+            "role": "BlogEC2Role"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.iam.aws_iam_role.ec2_blog_role"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.iam",
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "ssm_attach",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "BlogEC2Role/arn:aws:iam::aws:policy/AmazonSSMFullAccess",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonSSMFullAccess",
+            "role": "BlogEC2Role"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.iam.aws_iam_role.ec2_blog_role"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.parameterstore",
+      "mode": "managed",
+      "type": "aws_ssm_parameter",
+      "name": "alb_dns_name",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "allowed_pattern": "",
+            "arn": "arn:aws:ssm:ap-southeast-1:516969219217:parameter/BLOG/Wordpress/ALBDNSName",
+            "data_type": "text",
+            "description": "dns name of the ALB for WordPress",
+            "has_value_wo": false,
+            "id": "/BLOG/Wordpress/ALBDNSName",
+            "insecure_value": null,
+            "key_id": "",
+            "name": "/BLOG/Wordpress/ALBDNSName",
+            "overwrite": null,
+            "region": "ap-southeast-1",
+            "tags": {
+              "Project": "BLOG"
+            },
+            "tags_all": {
+              "Project": "BLOG"
+            },
+            "tier": "Standard",
+            "type": "String",
+            "value": "blogwordpressALB-1713581403.ap-southeast-1.elb.amazonaws.com",
+            "value_wo": null,
+            "value_wo_version": null,
+            "version": 1
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "value_wo"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "value"
+              }
+            ]
+          ],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.parameterstore",
+      "mode": "managed",
+      "type": "aws_ssm_parameter",
+      "name": "db_endpoint",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "allowed_pattern": "",
+            "arn": "arn:aws:ssm:ap-southeast-1:516969219217:parameter/BLOG/Wordpress/DBEndpoint",
+            "data_type": "text",
+            "description": "Database endpoint for WordPress",
+            "has_value_wo": false,
+            "id": "/BLOG/Wordpress/DBEndpoint",
+            "insecure_value": null,
+            "key_id": "",
+            "name": "/BLOG/Wordpress/DBEndpoint",
+            "overwrite": null,
+            "region": "ap-southeast-1",
+            "tags": {
+              "Project": "BLOG"
+            },
+            "tags_all": {
+              "Project": "BLOG"
+            },
+            "tier": "Standard",
+            "type": "String",
+            "value": "blogrds.clq4k462w7aa.ap-southeast-1.rds.amazonaws.com",
+            "value_wo": null,
+            "value_wo_version": null,
+            "version": 1
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "value_wo"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "value"
+              }
+            ]
+          ],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.parameterstore",
+      "mode": "managed",
+      "type": "aws_ssm_parameter",
+      "name": "db_name",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "allowed_pattern": "",
+            "arn": "arn:aws:ssm:ap-southeast-1:516969219217:parameter/BLOG/Wordpress/DBName",
+            "data_type": "text",
+            "description": "Database name for WordPress",
+            "has_value_wo": false,
+            "id": "/BLOG/Wordpress/DBName",
+            "insecure_value": null,
+            "key_id": "",
+            "name": "/BLOG/Wordpress/DBName",
+            "overwrite": null,
+            "region": "ap-southeast-1",
+            "tags": {
+              "Project": "BLOG"
+            },
+            "tags_all": {
+              "Project": "BLOG"
+            },
+            "tier": "Standard",
+            "type": "String",
+            "value": "wordpressblogdb",
+            "value_wo": null,
+            "value_wo_version": null,
+            "version": 1
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "value"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "value_wo"
+              }
+            ]
+          ],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.parameterstore",
+      "mode": "managed",
+      "type": "aws_ssm_parameter",
+      "name": "db_password",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "allowed_pattern": "",
+            "arn": "arn:aws:ssm:ap-southeast-1:516969219217:parameter/BLOG/Wordpress/DBPassword",
+            "data_type": "text",
+            "description": "Database user password for WordPress",
+            "has_value_wo": false,
+            "id": "/BLOG/Wordpress/DBPassword",
+            "insecure_value": null,
+            "key_id": "alias/aws/ssm",
+            "name": "/BLOG/Wordpress/DBPassword",
+            "overwrite": null,
+            "region": "ap-southeast-1",
+            "tags": {
+              "Project": "BLOG"
+            },
+            "tags_all": {
+              "Project": "BLOG"
+            },
+            "tier": "Standard",
+            "type": "SecureString",
+            "value": "Sakamoto123",
+            "value_wo": null,
+            "value_wo_version": null,
+            "version": 2
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "value_wo"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "value"
+              }
+            ]
+          ],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.parameterstore",
+      "mode": "managed",
+      "type": "aws_ssm_parameter",
+      "name": "db_root_password",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "allowed_pattern": "",
+            "arn": "arn:aws:ssm:ap-southeast-1:516969219217:parameter/BLOG/Wordpress/DBRootPassword",
+            "data_type": "text",
+            "description": "Database root password for WordPress",
+            "has_value_wo": false,
+            "id": "/BLOG/Wordpress/DBRootPassword",
+            "insecure_value": null,
+            "key_id": "alias/aws/ssm",
+            "name": "/BLOG/Wordpress/DBRootPassword",
+            "overwrite": null,
+            "region": "ap-southeast-1",
+            "tags": {
+              "Project": "BLOG"
+            },
+            "tags_all": {
+              "Project": "BLOG"
+            },
+            "tier": "Standard",
+            "type": "SecureString",
+            "value": "RootSakamoto123",
+            "value_wo": null,
+            "value_wo_version": null,
+            "version": 2
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "value_wo"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "value"
+              }
+            ]
+          ],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.parameterstore",
+      "mode": "managed",
+      "type": "aws_ssm_parameter",
+      "name": "db_user",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "allowed_pattern": "",
+            "arn": "arn:aws:ssm:ap-southeast-1:516969219217:parameter/BLOG/Wordpress/DBUser",
+            "data_type": "text",
+            "description": "Database username for WordPress",
+            "has_value_wo": false,
+            "id": "/BLOG/Wordpress/DBUser",
+            "insecure_value": null,
+            "key_id": "",
+            "name": "/BLOG/Wordpress/DBUser",
+            "overwrite": null,
+            "region": "ap-southeast-1",
+            "tags": {
+              "Project": "BLOG"
+            },
+            "tags_all": {
+              "Project": "BLOG"
+            },
+            "tier": "Standard",
+            "type": "String",
+            "value": "patrickneil",
+            "value_wo": null,
+            "value_wo_version": null,
+            "version": 1
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "value_wo"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "value"
+              }
+            ]
+          ],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.parameterstore",
+      "mode": "managed",
+      "type": "aws_ssm_parameter",
+      "name": "file_system_id",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "allowed_pattern": "",
+            "arn": "arn:aws:ssm:ap-southeast-1:516969219217:parameter/BLOG/Wordpress/EFSFileSystemID",
+            "data_type": "text",
+            "description": "EFS File System ID for WordPress",
+            "has_value_wo": false,
+            "id": "/BLOG/Wordpress/EFSFileSystemID",
+            "insecure_value": null,
+            "key_id": "",
+            "name": "/BLOG/Wordpress/EFSFileSystemID",
+            "overwrite": null,
+            "region": "ap-southeast-1",
+            "tags": {
+              "Project": "BLOG"
+            },
+            "tags_all": {
+              "Project": "BLOG"
+            },
+            "tier": "Standard",
+            "type": "String",
+            "value": "fs-0babb95bec76c5480",
+            "value_wo": null,
+            "value_wo_version": null,
+            "version": 2
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "value_wo"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "value"
+              }
+            ]
+          ],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.rds",
+      "mode": "managed",
+      "type": "aws_db_instance",
+      "name": "blogrds",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 2,
+          "attributes": {
+            "address": "blogrds.clq4k462w7aa.ap-southeast-1.rds.amazonaws.com",
+            "allocated_storage": 20,
+            "allow_major_version_upgrade": null,
+            "apply_immediately": true,
+            "arn": "arn:aws:rds:ap-southeast-1:516969219217:db:blogrds",
+            "auto_minor_version_upgrade": true,
+            "availability_zone": "ap-southeast-1b",
+            "backup_retention_period": 7,
+            "backup_target": "region",
+            "backup_window": "16:40-17:10",
+            "blue_green_update": [],
+            "ca_cert_identifier": "rds-ca-rsa2048-g1",
+            "character_set_name": "",
+            "copy_tags_to_snapshot": false,
+            "custom_iam_instance_profile": "",
+            "customer_owned_ip_enabled": false,
+            "database_insights_mode": "standard",
+            "db_name": "wordpressblogdb",
+            "db_subnet_group_name": "blog-rds-sub-group",
+            "dedicated_log_volume": false,
+            "delete_automated_backups": true,
+            "deletion_protection": false,
+            "domain": "",
+            "domain_auth_secret_arn": "",
+            "domain_dns_ips": [],
+            "domain_fqdn": "",
+            "domain_iam_role_name": "",
+            "domain_ou": "",
+            "enabled_cloudwatch_logs_exports": [],
+            "endpoint": "blogrds.clq4k462w7aa.ap-southeast-1.rds.amazonaws.com:3306",
+            "engine": "mysql",
+            "engine_lifecycle_support": "open-source-rds-extended-support",
+            "engine_version": "8.0.42",
+            "engine_version_actual": "8.0.42",
+            "final_snapshot_identifier": null,
+            "hosted_zone_id": "Z2G0U3KFCY8NZ5",
+            "iam_database_authentication_enabled": false,
+            "id": "db-RUKLFBKXJRZWCK3GSWFBKPTGBM",
+            "identifier": "blogrds",
+            "identifier_prefix": "",
+            "instance_class": "db.t3.micro",
+            "iops": 0,
+            "kms_key_id": "",
+            "latest_restorable_time": "2025-10-12T09:50:00Z",
+            "license_model": "general-public-license",
+            "listener_endpoint": [],
+            "maintenance_window": "tue:14:07-tue:14:37",
+            "manage_master_user_password": null,
+            "master_user_secret": [],
+            "master_user_secret_kms_key_id": null,
+            "max_allocated_storage": 0,
+            "monitoring_interval": 0,
+            "monitoring_role_arn": "",
+            "multi_az": false,
+            "nchar_character_set_name": "",
+            "network_type": "IPV4",
+            "option_group_name": "default:mysql-8-0",
+            "parameter_group_name": "default.mysql8.0",
+            "password": "Sakamoto123",
+            "password_wo": null,
+            "password_wo_version": null,
+            "performance_insights_enabled": false,
+            "performance_insights_kms_key_id": "",
+            "performance_insights_retention_period": 0,
+            "port": 3306,
+            "publicly_accessible": false,
+            "region": "ap-southeast-1",
+            "replica_mode": "",
+            "replicas": [],
+            "replicate_source_db": "",
+            "resource_id": "db-RUKLFBKXJRZWCK3GSWFBKPTGBM",
+            "restore_to_point_in_time": [],
+            "s3_import": [],
+            "skip_final_snapshot": true,
+            "snapshot_identifier": null,
+            "status": "available",
+            "storage_encrypted": false,
+            "storage_throughput": 0,
+            "storage_type": "gp2",
+            "tags": {},
+            "tags_all": {},
+            "timeouts": null,
+            "timezone": "",
+            "upgrade_storage_config": null,
+            "username": "patrickneil",
+            "vpc_security_group_ids": [
+              "sg-05519907a950bd40c"
+            ]
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "db_name"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "username"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "password_wo"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "password"
+              }
+            ]
+          ],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAwLCJkZWxldGUiOjM2MDAwMDAwMDAwMDAsInVwZGF0ZSI6NDgwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMiJ9",
+          "dependencies": [
+            "module.ec2.aws_security_group.goingtointernet",
+            "module.ec2.aws_security_group.rds",
+            "module.rds.aws_db_subnet_group.blog",
+            "module.vpc.aws_subnet.named",
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.rds",
+      "mode": "managed",
+      "type": "aws_db_subnet_group",
+      "name": "blog",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:rds:ap-southeast-1:516969219217:subgrp:blog-rds-sub-group",
+            "description": "subnets for rds instance",
+            "id": "blog-rds-sub-group",
+            "name": "blog-rds-sub-group",
+            "name_prefix": "",
+            "region": "ap-southeast-1",
+            "subnet_ids": [
+              "subnet-03416325a95baae3d",
+              "subnet-0a51c281bb35fa124",
+              "subnet-0c1baef04464e2ea9"
+            ],
+            "supported_network_types": [
+              "DUAL",
+              "IPV4"
+            ],
+            "tags": {},
+            "tags_all": {},
+            "vpc_id": "vpc-0606a85b56b1ea1e1"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.vpc.aws_subnet.named",
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "data",
+      "type": "aws_availability_zones",
+      "name": "available",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "all_availability_zones": null,
+            "exclude_names": null,
+            "exclude_zone_ids": null,
+            "filter": null,
+            "group_names": [
+              "ap-southeast-1-zg-1"
+            ],
+            "id": "ap-southeast-1",
+            "names": [
+              "ap-southeast-1a",
+              "ap-southeast-1b",
+              "ap-southeast-1c"
+            ],
+            "region": "ap-southeast-1",
+            "state": "available",
+            "timeouts": null,
+            "zone_ids": [
+              "apse1-az2",
+              "apse1-az1",
+              "apse1-az3"
+            ]
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "aws_internet_gateway",
+      "name": "blog_igw",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:internet-gateway/igw-0feaa8bb2fc2c5948",
+            "id": "igw-0feaa8bb2fc2c5948",
+            "owner_id": "516969219217",
+            "region": "ap-southeast-1",
+            "tags": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "blog-igw",
+              "Project": "blog"
+            },
+            "tags_all": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "blog-igw",
+              "Project": "blog"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0606a85b56b1ea1e1"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.vpc.aws_vpc.blog_vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "aws_route",
+      "name": "public_ipv4_default",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "carrier_gateway_id": "",
+            "core_network_arn": "",
+            "destination_cidr_block": "0.0.0.0/0",
+            "destination_ipv6_cidr_block": "",
+            "destination_prefix_list_id": "",
+            "egress_only_gateway_id": "",
+            "gateway_id": "igw-0feaa8bb2fc2c5948",
+            "id": "r-rtb-0d6e8e0b34d4dc86c1080289494",
+            "instance_id": "",
+            "instance_owner_id": "",
+            "local_gateway_id": "",
+            "nat_gateway_id": "",
+            "network_interface_id": "",
+            "origin": "CreateRoute",
+            "region": "ap-southeast-1",
+            "route_table_id": "rtb-0d6e8e0b34d4dc86c",
+            "state": "active",
+            "timeouts": null,
+            "transit_gateway_id": "",
+            "vpc_endpoint_id": "",
+            "vpc_peering_connection_id": ""
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.vpc.aws_internet_gateway.blog_igw",
+            "module.vpc.aws_route_table.public",
+            "module.vpc.aws_vpc.blog_vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "aws_route",
+      "name": "public_ipv6_default",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "carrier_gateway_id": "",
+            "core_network_arn": "",
+            "destination_cidr_block": "",
+            "destination_ipv6_cidr_block": "::/0",
+            "destination_prefix_list_id": "",
+            "egress_only_gateway_id": "",
+            "gateway_id": "igw-0feaa8bb2fc2c5948",
+            "id": "r-rtb-0d6e8e0b34d4dc86c2750132062",
+            "instance_id": "",
+            "instance_owner_id": "",
+            "local_gateway_id": "",
+            "nat_gateway_id": "",
+            "network_interface_id": "",
+            "origin": "CreateRoute",
+            "region": "ap-southeast-1",
+            "route_table_id": "rtb-0d6e8e0b34d4dc86c",
+            "state": "active",
+            "timeouts": null,
+            "transit_gateway_id": "",
+            "vpc_endpoint_id": "",
+            "vpc_peering_connection_id": ""
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.vpc.aws_internet_gateway.blog_igw",
+            "module.vpc.aws_route_table.public",
+            "module.vpc.aws_vpc.blog_vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "aws_route_table",
+      "name": "public",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:route-table/rtb-0d6e8e0b34d4dc86c",
+            "id": "rtb-0d6e8e0b34d4dc86c",
+            "owner_id": "516969219217",
+            "propagating_vgws": [],
+            "region": "ap-southeast-1",
+            "route": [
+              {
+                "carrier_gateway_id": "",
+                "cidr_block": "",
+                "core_network_arn": "",
+                "destination_prefix_list_id": "",
+                "egress_only_gateway_id": "",
+                "gateway_id": "igw-0feaa8bb2fc2c5948",
+                "ipv6_cidr_block": "::/0",
+                "local_gateway_id": "",
+                "nat_gateway_id": "",
+                "network_interface_id": "",
+                "transit_gateway_id": "",
+                "vpc_endpoint_id": "",
+                "vpc_peering_connection_id": ""
+              },
+              {
+                "carrier_gateway_id": "",
+                "cidr_block": "0.0.0.0/0",
+                "core_network_arn": "",
+                "destination_prefix_list_id": "",
+                "egress_only_gateway_id": "",
+                "gateway_id": "igw-0feaa8bb2fc2c5948",
+                "ipv6_cidr_block": "",
+                "local_gateway_id": "",
+                "nat_gateway_id": "",
+                "network_interface_id": "",
+                "transit_gateway_id": "",
+                "vpc_endpoint_id": "",
+                "vpc_peering_connection_id": ""
+              }
+            ],
+            "tags": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "blog-vpc-public-rt",
+              "Project": "blog"
+            },
+            "tags_all": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "blog-vpc-public-rt",
+              "Project": "blog"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0606a85b56b1ea1e1"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.vpc.aws_vpc.blog_vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "aws_route_table_association",
+      "name": "public_assoc",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": "Public-subnet-A",
+          "schema_version": 0,
+          "attributes": {
+            "gateway_id": "",
+            "id": "rtbassoc-0c494e7ae8562a7d3",
+            "region": "ap-southeast-1",
+            "route_table_id": "rtb-0d6e8e0b34d4dc86c",
+            "subnet_id": "subnet-05cd81fa2f549ce23",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.vpc.aws_route_table.public",
+            "module.vpc.aws_subnet.named",
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ]
+        },
+        {
+          "index_key": "Public-subnet-B",
+          "schema_version": 0,
+          "attributes": {
+            "gateway_id": "",
+            "id": "rtbassoc-0476da67de13efee9",
+            "region": "ap-southeast-1",
+            "route_table_id": "rtb-0d6e8e0b34d4dc86c",
+            "subnet_id": "subnet-01a83167340d4462c",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.vpc.aws_route_table.public",
+            "module.vpc.aws_subnet.named",
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ]
+        },
+        {
+          "index_key": "Public-subnet-C",
+          "schema_version": 0,
+          "attributes": {
+            "gateway_id": "",
+            "id": "rtbassoc-05cc845d3f5b3a009",
+            "region": "ap-southeast-1",
+            "route_table_id": "rtb-0d6e8e0b34d4dc86c",
+            "subnet_id": "subnet-0b2f32a5ec8730089",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.vpc.aws_route_table.public",
+            "module.vpc.aws_subnet.named",
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "named",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": "App-subnet-A",
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:subnet/subnet-0b2508bb6c361ca43",
+            "assign_ipv6_address_on_creation": true,
+            "availability_zone": "ap-southeast-1a",
+            "availability_zone_id": "apse1-az2",
+            "cidr_block": "10.0.48.0/20",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-0b2508bb6c361ca43",
+            "ipv6_cidr_block": "2406:da18:ac0:c603::/64",
+            "ipv6_cidr_block_association_id": "subnet-cidr-assoc-0a75e5ee62bb746cf",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": false,
+            "outpost_arn": "",
+            "owner_id": "516969219217",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "region": "ap-southeast-1",
+            "tags": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "App-subnet-A",
+              "Project": "blog",
+              "Role": "app"
+            },
+            "tags_all": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "App-subnet-A",
+              "Project": "blog",
+              "Role": "app"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0606a85b56b1ea1e1"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ],
+          "create_before_destroy": true
+        },
+        {
+          "index_key": "App-subnet-B",
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:subnet/subnet-0309ef42f195495e2",
+            "assign_ipv6_address_on_creation": true,
+            "availability_zone": "ap-southeast-1b",
+            "availability_zone_id": "apse1-az1",
+            "cidr_block": "10.0.64.0/20",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-0309ef42f195495e2",
+            "ipv6_cidr_block": "2406:da18:ac0:c604::/64",
+            "ipv6_cidr_block_association_id": "subnet-cidr-assoc-02cd703c637743443",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": false,
+            "outpost_arn": "",
+            "owner_id": "516969219217",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "region": "ap-southeast-1",
+            "tags": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "App-subnet-B",
+              "Project": "blog",
+              "Role": "app"
+            },
+            "tags_all": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "App-subnet-B",
+              "Project": "blog",
+              "Role": "app"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0606a85b56b1ea1e1"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ],
+          "create_before_destroy": true
+        },
+        {
+          "index_key": "App-subnet-C",
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:subnet/subnet-021e3fb3bb43cf9d1",
+            "assign_ipv6_address_on_creation": true,
+            "availability_zone": "ap-southeast-1c",
+            "availability_zone_id": "apse1-az3",
+            "cidr_block": "10.0.80.0/20",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-021e3fb3bb43cf9d1",
+            "ipv6_cidr_block": "2406:da18:ac0:c605::/64",
+            "ipv6_cidr_block_association_id": "subnet-cidr-assoc-09c8a2e697a93b4fd",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": false,
+            "outpost_arn": "",
+            "owner_id": "516969219217",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "region": "ap-southeast-1",
+            "tags": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "App-subnet-C",
+              "Project": "blog",
+              "Role": "app"
+            },
+            "tags_all": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "App-subnet-C",
+              "Project": "blog",
+              "Role": "app"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0606a85b56b1ea1e1"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ],
+          "create_before_destroy": true
+        },
+        {
+          "index_key": "DB-subnet-A",
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:subnet/subnet-03416325a95baae3d",
+            "assign_ipv6_address_on_creation": true,
+            "availability_zone": "ap-southeast-1a",
+            "availability_zone_id": "apse1-az2",
+            "cidr_block": "10.0.96.0/20",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-03416325a95baae3d",
+            "ipv6_cidr_block": "2406:da18:ac0:c606::/64",
+            "ipv6_cidr_block_association_id": "subnet-cidr-assoc-09d56163834ebfdb5",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": false,
+            "outpost_arn": "",
+            "owner_id": "516969219217",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "region": "ap-southeast-1",
+            "tags": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "DB-subnet-A",
+              "Project": "blog",
+              "Role": "db"
+            },
+            "tags_all": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "DB-subnet-A",
+              "Project": "blog",
+              "Role": "db"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0606a85b56b1ea1e1"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ],
+          "create_before_destroy": true
+        },
+        {
+          "index_key": "DB-subnet-B",
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:subnet/subnet-0c1baef04464e2ea9",
+            "assign_ipv6_address_on_creation": true,
+            "availability_zone": "ap-southeast-1b",
+            "availability_zone_id": "apse1-az1",
+            "cidr_block": "10.0.112.0/20",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-0c1baef04464e2ea9",
+            "ipv6_cidr_block": "2406:da18:ac0:c607::/64",
+            "ipv6_cidr_block_association_id": "subnet-cidr-assoc-0b44463fa1c63907a",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": false,
+            "outpost_arn": "",
+            "owner_id": "516969219217",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "region": "ap-southeast-1",
+            "tags": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "DB-subnet-B",
+              "Project": "blog",
+              "Role": "db"
+            },
+            "tags_all": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "DB-subnet-B",
+              "Project": "blog",
+              "Role": "db"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0606a85b56b1ea1e1"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ],
+          "create_before_destroy": true
+        },
+        {
+          "index_key": "DB-subnet-C",
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:subnet/subnet-0a51c281bb35fa124",
+            "assign_ipv6_address_on_creation": true,
+            "availability_zone": "ap-southeast-1c",
+            "availability_zone_id": "apse1-az3",
+            "cidr_block": "10.0.128.0/20",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-0a51c281bb35fa124",
+            "ipv6_cidr_block": "2406:da18:ac0:c608::/64",
+            "ipv6_cidr_block_association_id": "subnet-cidr-assoc-095366e29721f6e7e",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": false,
+            "outpost_arn": "",
+            "owner_id": "516969219217",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "region": "ap-southeast-1",
+            "tags": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "DB-subnet-C",
+              "Project": "blog",
+              "Role": "db"
+            },
+            "tags_all": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "DB-subnet-C",
+              "Project": "blog",
+              "Role": "db"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0606a85b56b1ea1e1"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ],
+          "create_before_destroy": true
+        },
+        {
+          "index_key": "Public-subnet-A",
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:subnet/subnet-05cd81fa2f549ce23",
+            "assign_ipv6_address_on_creation": true,
+            "availability_zone": "ap-southeast-1a",
+            "availability_zone_id": "apse1-az2",
+            "cidr_block": "10.0.0.0/20",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-05cd81fa2f549ce23",
+            "ipv6_cidr_block": "2406:da18:ac0:c600::/64",
+            "ipv6_cidr_block_association_id": "subnet-cidr-assoc-03e0455bce7d531fc",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": true,
+            "outpost_arn": "",
+            "owner_id": "516969219217",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "region": "ap-southeast-1",
+            "tags": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "Public-subnet-A",
+              "Project": "blog",
+              "Role": "public"
+            },
+            "tags_all": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "Public-subnet-A",
+              "Project": "blog",
+              "Role": "public"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0606a85b56b1ea1e1"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ],
+          "create_before_destroy": true
+        },
+        {
+          "index_key": "Public-subnet-B",
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:subnet/subnet-01a83167340d4462c",
+            "assign_ipv6_address_on_creation": true,
+            "availability_zone": "ap-southeast-1b",
+            "availability_zone_id": "apse1-az1",
+            "cidr_block": "10.0.16.0/20",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-01a83167340d4462c",
+            "ipv6_cidr_block": "2406:da18:ac0:c601::/64",
+            "ipv6_cidr_block_association_id": "subnet-cidr-assoc-0ab5868212999d0e7",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": true,
+            "outpost_arn": "",
+            "owner_id": "516969219217",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "region": "ap-southeast-1",
+            "tags": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "Public-subnet-B",
+              "Project": "blog",
+              "Role": "public"
+            },
+            "tags_all": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "Public-subnet-B",
+              "Project": "blog",
+              "Role": "public"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0606a85b56b1ea1e1"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ],
+          "create_before_destroy": true
+        },
+        {
+          "index_key": "Public-subnet-C",
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:subnet/subnet-0b2f32a5ec8730089",
+            "assign_ipv6_address_on_creation": true,
+            "availability_zone": "ap-southeast-1c",
+            "availability_zone_id": "apse1-az3",
+            "cidr_block": "10.0.32.0/20",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-0b2f32a5ec8730089",
+            "ipv6_cidr_block": "2406:da18:ac0:c602::/64",
+            "ipv6_cidr_block_association_id": "subnet-cidr-assoc-09c122fe98d729512",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": true,
+            "outpost_arn": "",
+            "owner_id": "516969219217",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "region": "ap-southeast-1",
+            "tags": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "Public-subnet-C",
+              "Project": "blog",
+              "Role": "public"
+            },
+            "tags_all": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "Public-subnet-C",
+              "Project": "blog",
+              "Role": "public"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0606a85b56b1ea1e1"
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "module.vpc.aws_vpc.blog_vpc",
+            "module.vpc.data.aws_availability_zones.available"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "aws_vpc",
+      "name": "blog_vpc",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-southeast-1:516969219217:vpc/vpc-0606a85b56b1ea1e1",
+            "assign_generated_ipv6_cidr_block": true,
+            "cidr_block": "10.0.0.0/16",
+            "default_network_acl_id": "acl-02ec3560da4a5caaf",
+            "default_route_table_id": "rtb-04d94047a04c43206",
+            "default_security_group_id": "sg-0ef966b5f5ca543be",
+            "dhcp_options_id": "dopt-076f1ba267464da91",
+            "enable_dns_hostnames": true,
+            "enable_dns_support": true,
+            "enable_network_address_usage_metrics": false,
+            "id": "vpc-0606a85b56b1ea1e1",
+            "instance_tenancy": "default",
+            "ipv4_ipam_pool_id": null,
+            "ipv4_netmask_length": null,
+            "ipv6_association_id": "vpc-cidr-assoc-0ccb63d56238d8fce",
+            "ipv6_cidr_block": "2406:da18:ac0:c600::/56",
+            "ipv6_cidr_block_network_border_group": "ap-southeast-1",
+            "ipv6_ipam_pool_id": "",
+            "ipv6_netmask_length": 0,
+            "main_route_table_id": "rtb-04d94047a04c43206",
+            "owner_id": "516969219217",
+            "region": "ap-southeast-1",
+            "tags": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "blog-vpc",
+              "Project": "blog"
+            },
+            "tags_all": {
+              "Env": "dev",
+              "Managed": "terraform",
+              "Name": "blog-vpc",
+              "Project": "blog"
+            }
+          },
+          "sensitive_attributes": [],
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "create_before_destroy": true
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}
