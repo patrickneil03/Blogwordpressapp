@@ -1,7 +1,12 @@
+# Update .gitattributes to include Dockerfile
+@"
 # Normalize all text files to LF in the repository
 *   text=auto
-
 # Force LF for Terraform and related files
 *.tf     text eol=lf
 *.tfvars text eol=lf
 *.sh     text eol=lf
+Dockerfile text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+"@ | Out-File -FilePath .gitattributes -Encoding utf8
