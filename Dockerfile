@@ -14,7 +14,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*
 
 # PHP session configuration (HTTP-only)
-RUN cat > /usr/local/etc/php/conf.d/sessions.ini <<'EOF'
+RUN cat > /usr/local/etc/php/conf.d/sessions.ini <<'PHP'
 session.save_path = /var/lib/php/sessions
 session.cookie_lifetime = 86400
 session.gc_maxlifetime = 86400
@@ -23,7 +23,7 @@ session.use_strict_mode = 1
 session.cookie_httponly = 1
 session.cookie_samesite = Lax
 session.name = WORDPRESS_SESSION
-EOF
+PHP
 
 # Improved Load Balancer Compatibility MU Plugin
 RUN cat > /var/www/html/wp-content/mu-plugins/load-balancer-compat.php <<'PHP'
