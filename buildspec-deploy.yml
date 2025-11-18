@@ -9,9 +9,9 @@ phases:
   build:
     commands:
       - echo "Tagging Docker image for ECR..."
-      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - docker tag wordpress-blog-ecr:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/wordpress-blog-ecr:latest
       - echo "Pushing Docker image to ECR..."
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/wordpress-blog-ecr:latest
       - echo "Triggering ASG instance refresh..."
       - aws autoscaling start-instance-refresh --auto-scaling-group-name $ASG_NAME --strategy Rolling --preferences MinHealthyPercentage=90,InstanceWarmup=300
       - echo "Invalidating CloudFront cache..."
