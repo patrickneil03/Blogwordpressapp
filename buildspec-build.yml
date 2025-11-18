@@ -4,3 +4,9 @@ phases:
   build:
     commands:
       - echo "Hello, CodeBuild"
+      - echo "=== Checking Dockerfile ==="
+      - ls -la
+      - echo "Line 18:"
+      - sed -n '18p' Dockerfile
+      - echo "Full Dockerfile:"
+      - cat Dockerfile
