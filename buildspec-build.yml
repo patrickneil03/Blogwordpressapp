@@ -3,11 +3,10 @@ version: 0.2
 phases:
   build:
     commands:
-      - echo "=== DEBUG: Checking Dockerfile ==="
-      - echo "Line 18:"
-      - sed -n '18p' Dockerfile
-      - echo "Full Dockerfile:"
+      - echo "=== DEBUG: Full Dockerfile Content ==="
       - cat Dockerfile
-      - echo "=== Building Docker Image ==="
-      - docker build -t wordpress-blog-ecr:latest .
-      - echo "✅ Build successful!"
+      - echo "=== DEBUG: Line 18 Specifically ==="
+      - sed -n '18p' Dockerfile
+      - echo "=== DEBUG: File Info ==="
+      - file Dockerfile
+      - ls -la Dockerfile
