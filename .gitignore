@@ -40,7 +40,6 @@ terraform.rc
 # ─── Docker & Build Artifacts ──────────────────────────────
 # Docker
 docker-compose.override.yml
-.dockerignore
 
 # Build artifacts
 *.zip
