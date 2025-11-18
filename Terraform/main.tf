@@ -113,4 +113,5 @@ module "codepipeline"{
   artifacts_bucket = module.s3.artifacts_bucket
   codebuild_build_name = module.codebuild.codebuild_build_name
   codebuild_deploy_name = module.codebuild.codebuild_deploy_name
+  github_owner = var.github_owner
 }

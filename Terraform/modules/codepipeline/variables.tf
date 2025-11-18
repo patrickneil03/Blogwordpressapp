@@ -21,3 +21,7 @@ variable "codepipeline_role_arn" {
 variable "artifacts_bucket" {
   description = "the bucket for artifacts"
 }
+
+variable "github_owner" {
+  description = "the username of my github account"
+}
