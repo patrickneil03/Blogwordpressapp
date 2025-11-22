@@ -14,7 +14,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*
 
 # PHP session configuration (HTTP-only)
-RUN cat > /usr/local/etc/php/conf.d/sessions.ini <<'EOF'
+RUN cat > /usr/local/etc/php/conf.d/sessions.ini <<EOF
 session.save_path = /var/lib/php/sessions
 session.cookie_lifetime = 86400
 session.gc_maxlifetime = 86400
@@ -26,7 +26,7 @@ session.name = WORDPRESS_SESSION
 EOF
 
 # Improved Load Balancer Compatibility MU Plugin
-RUN cat > /var/www/html/wp-content/mu-plugins/load-balancer-compat.php <<'EOF'
+RUN cat > /var/www/html/wp-content/mu-plugins/load-balancer-compat.php <<EOF
 <?php
 /**
  * Plugin Name: Load Balancer Compatibility
@@ -35,13 +35,13 @@ RUN cat > /var/www/html/wp-content/mu-plugins/load-balancer-compat.php <<'EOF'
  */
 
 // Trust forwarded proto from ALB/CloudFront
-if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-    $_SERVER['HTTPS'] = 'on';
+if (isset(\$_SERVER['HTTP_X_FORWARDED_PROTO']) && \$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+    \$_SERVER['HTTPS'] = 'on';
 }
 
 // Trust forwarded host
-if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
-    $_SERVER['HTTP_HOST'] = $_SERVER['HTTP_X_FORWARDED_HOST'];
+if (isset(\$_SERVER['HTTP_X_FORWARDED_HOST'])) {
+    \$_SERVER['HTTP_HOST'] = \$_SERVER['HTTP_X_FORWARDED_HOST'];
 }
 
 // Ensure WordPress respects the forwarded protocol
@@ -69,21 +69,21 @@ if (!defined('CONCATENATE_SCRIPTS')) {
 EOF
 
 # WordPress configuration for reverse proxy setup
-RUN cat > /var/www/html/wp-config-reverse-proxy.php <<'EOF'
+RUN cat > /var/www/html/wp-config-reverse-proxy.php <<EOF
 <?php
 // Reverse proxy configuration for CloudFront/ALB
-if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
-    $_SERVER['HTTPS'] = 'on';
-    $_SERVER['SERVER_PORT'] = 443;
+if (isset(\$_SERVER['HTTP_X_FORWARDED_PROTO']) && \$_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+    \$_SERVER['HTTPS'] = 'on';
+    \$_SERVER['SERVER_PORT'] = 443;
 }
 
-if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
-    $_SERVER['HTTP_HOST'] = $_SERVER['HTTP_X_FORWARDED_HOST'];
+if (isset(\$_SERVER['HTTP_X_FORWARDED_HOST'])) {
+    \$_SERVER['HTTP_HOST'] = \$_SERVER['HTTP_X_FORWARDED_HOST'];
 }
 EOF
 
 # Create a custom entrypoint wrapper that includes our reverse proxy config
-RUN cat > /usr/local/bin/custom-entrypoint.sh <<'EOF'
+RUN cat > /usr/local/bin/custom-entrypoint.sh <<EOF
 #!/bin/bash
 set -e
 
@@ -95,7 +95,7 @@ if [ -f /var/www/html/wp-config.php ] && [ -f /var/www/html/wp-config-reverse-pr
 fi
 
 # Call the original entrypoint
-exec docker-entrypoint.sh "$@"
+exec docker-entrypoint.sh "\$@"
 EOF
 
 RUN chmod +x /usr/local/bin/custom-entrypoint.sh

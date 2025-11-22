@@ -1,4 +1,3 @@
-# CodeBuild Project for BUILD Stage
 resource "aws_codebuild_project" "wordpress_build" {
   name          = "wordpress-blog-build"
   description   = "Build WordPress Docker image"
@@ -32,9 +31,15 @@ resource "aws_codebuild_project" "wordpress_build" {
       phases = {
         pre_build = {
           commands = [
-            "echo 'Validating Dockerfile...'",
+            "echo '=== FILE INFO ==='",
+            "wc -l Dockerfile",
             "ls -la Dockerfile",
-            "echo 'Starting Docker build process...'"
+            "echo '=== LINES 15-30 (includes EOF on line 26) ==='",
+            "sed -n '15,30p' Dockerfile",
+            "echo '=== ALL EOF LINES ==='",
+            "grep -n '^EOF$' Dockerfile || echo 'No EOF found'",
+            "echo '=== ALL HEREDOC STARTS ==='",
+            "grep -n \"<<'EOF'\" Dockerfile || echo 'No heredocs found'"
           ]
         }
         build = {
