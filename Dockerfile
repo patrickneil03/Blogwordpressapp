@@ -67,7 +67,8 @@ RUN mkdir -p /var/www/html/wp-content/mu-plugins && \
     'if (!defined("CONCATENATE_SCRIPTS")) {' \
     '    define("CONCATENATE_SCRIPTS", false);' \
     '}' \
-    > /var/www/html/wp-content/mu-plugins/load-balancer-compat.php
+    > /var/www/html/wp-content/mu-plugins/load-balancer-compat.php && \
+    chown -R www-data:www-data /var/www/html/wp-content/mu-plugins
 
 # WordPress configuration for reverse proxy setup
 RUN printf '%s\n' \
@@ -97,12 +98,8 @@ RUN printf '%s\n' \
     '' \
     '# Call the original entrypoint' \
     'exec docker-entrypoint.sh "$@"' \
-    > /usr/local/bin/custom-entrypoint.sh
-
-RUN chmod +x /usr/local/bin/custom-entrypoint.sh
-
-# Ensure correct ownership
-RUN chown -R www-data:www-data /var/www/html/wp-content/mu-plugins /var/lib/php/sessions
+    > /usr/local/bin/custom-entrypoint.sh && \
+    chmod +x /usr/local/bin/custom-entrypoint.sh
 
 # Add healthcheck endpoint
 RUN echo '<?php http_response_code(200); echo "OK"; ?>' > /var/www/html/health.php
