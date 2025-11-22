@@ -98,38 +98,32 @@ resource "aws_codebuild_project" "wordpress_deploy" {
   }
 
   source {
-    type = "CODEPIPELINE"
-    buildspec = yamlencode({
-      version = "0.2"
-      phases = {
-        pre_build = {
-          commands = [
-            "echo 'Logging in to Amazon ECR...'",
-            "aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com",
-            "echo 'ECR login successful'"
-          ]
-        }
-        build = {
-          commands = [
-            "echo 'Tagging Docker image for ECR...'",
-            "docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG",
-            "echo 'Pushing Docker image to ECR...'",
-            "docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG",
-            "echo 'Docker image pushed successfully'"
-          ]
-        }
-        post_build = {
-          commands = [
-            "echo 'Triggering ASG instance refresh...'",
-            "aws autoscaling start-instance-refresh --auto-scaling-group-name $ASG_NAME --strategy Rolling --preferences MinHealthyPercentage=90,InstanceWarmup=300",
-            "echo 'Invalidating CloudFront cache...'",
-            "aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_ID --paths '/*'",
-            "echo 'Deployment completed successfully'"
-          ]
-        }
+  type = "CODEPIPELINE"
+  buildspec = yamlencode({
+    version = "0.2"
+    phases = {
+      pre_build = {
+        commands = [
+          "echo 'Validating Dockerfile...'",
+          "ls -la Dockerfile",
+          "echo '=== Checking line 17 (should be EOF not PHP) ==='",
+          "sed -n '17p' Dockerfile",
+          "echo '=== First 30 lines ==='",
+          "head -30 Dockerfile",
+          "echo 'Starting Docker build process...'"
+        ]
       }
-    })
-  }
+      build = {
+        commands = [
+          "echo 'Building Docker image...'",
+          "docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .",
+          "echo 'Docker image built successfully'",
+          "docker images | grep $IMAGE_REPO_NAME"
+        ]
+      }
+    }
+  })
+}
 
   tags = {
     Name = "wordpress-blog-deploy"
