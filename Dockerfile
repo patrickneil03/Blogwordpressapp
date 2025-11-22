@@ -3,14 +3,14 @@ LABEL maintainer="you@example.com"
 
 ARG WP_CLI_URL="https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar"
 
-# Install minimal tools, fetch WP-CLI, create session and mu-plugins dirs, set ownership
+# Install minimal tools, fetch WP-CLI, create session dir, set ownership
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends curl ca-certificates; \
     curl -fsSL "$WP_CLI_URL" -o /usr/local/bin/wp; \
     chmod +x /usr/local/bin/wp; \
-    mkdir -p /var/lib/php/sessions /var/www/html/wp-content/mu-plugins; \
-    chown -R www-data:www-data /var/lib/php/sessions /var/www/html/wp-content/mu-plugins; \
+    mkdir -p /var/lib/php/sessions; \
+    chown -R www-data:www-data /var/lib/php/sessions; \
     rm -rf /var/lib/apt/lists/*
 
 # PHP session configuration (HTTP-only)
@@ -26,7 +26,8 @@ RUN printf '%s\n' \
     > /usr/local/etc/php/conf.d/sessions.ini
 
 # Improved Load Balancer Compatibility MU Plugin
-RUN printf '%s\n' \
+RUN mkdir -p /var/www/html/wp-content/mu-plugins && \
+    printf '%s\n' \
     '<?php' \
     '/**' \
     ' * Plugin Name: Load Balancer Compatibility' \
