@@ -14,7 +14,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*
 
 # PHP session configuration (HTTP-only)
-RUN cat > /usr/local/etc/php/conf.d/sessions.ini <<'PHP'
+RUN cat > /usr/local/etc/php/conf.d/sessions.ini <<'EOF'
 session.save_path = /var/lib/php/sessions
 session.cookie_lifetime = 86400
 session.gc_maxlifetime = 86400
@@ -23,10 +23,10 @@ session.use_strict_mode = 1
 session.cookie_httponly = 1
 session.cookie_samesite = Lax
 session.name = WORDPRESS_SESSION
-PHP
+EOF
 
 # Improved Load Balancer Compatibility MU Plugin
-RUN cat > /var/www/html/wp-content/mu-plugins/load-balancer-compat.php <<'PHP'
+RUN cat > /var/www/html/wp-content/mu-plugins/load-balancer-compat.php <<'EOF'
 <?php
 /**
  * Plugin Name: Load Balancer Compatibility
@@ -66,10 +66,10 @@ if (!defined('WP_SITEURL')) {
 if (!defined('CONCATENATE_SCRIPTS')) {
     define('CONCATENATE_SCRIPTS', false);
 }
-PHP
+EOF
 
 # WordPress configuration for reverse proxy setup
-RUN cat > /var/www/html/wp-config-reverse-proxy.php <<'PHP'
+RUN cat > /var/www/html/wp-config-reverse-proxy.php <<'EOF'
 <?php
 // Reverse proxy configuration for CloudFront/ALB
 if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
@@ -80,10 +80,25 @@ if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROT
 if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
     $_SERVER['HTTP_HOST'] = $_SERVER['HTTP_X_FORWARDED_HOST'];
 }
-PHP
+EOF
 
-# Modify the default WordPress entrypoint to include our reverse proxy config
-RUN sed -i '/^<?php/a require_once("wp-config-reverse-proxy.php");' /usr/local/bin/docker-entrypoint.sh
+# Create a custom entrypoint wrapper that includes our reverse proxy config
+RUN cat > /usr/local/bin/custom-entrypoint.sh <<'EOF'
+#!/bin/bash
+set -e
+
+# Include reverse proxy config in wp-config.php if it exists
+if [ -f /var/www/html/wp-config.php ] && [ -f /var/www/html/wp-config-reverse-proxy.php ]; then
+    if ! grep -q "wp-config-reverse-proxy.php" /var/www/html/wp-config.php; then
+        sed -i '1a require_once(ABSPATH . "wp-config-reverse-proxy.php");' /var/www/html/wp-config.php
+    fi
+fi
+
+# Call the original entrypoint
+exec docker-entrypoint.sh "$@"
+EOF
+
+RUN chmod +x /usr/local/bin/custom-entrypoint.sh
 
 # Ensure correct ownership
 RUN chown -R www-data:www-data /var/www/html/wp-content/mu-plugins /var/lib/php/sessions
@@ -96,3 +111,7 @@ EXPOSE 80
 # Healthcheck: internal probe, container checks itself
 HEALTHCHECK --interval=15s --timeout=5s --start-period=30s --retries=3 \
   CMD curl -fS --max-time 5 http://localhost/health.php || exit 1
+
+# Use our custom entrypoint
+ENTRYPOINT ["/usr/local/bin/custom-entrypoint.sh"]
+CMD ["apache2-foreground"]

@@ -32,18 +32,17 @@ resource "aws_codebuild_project" "wordpress_build" {
       phases = {
         pre_build = {
           commands = [
-            "echo '=== DEBUG: Checking Dockerfile ==='",
-            "echo 'Line 18 content:'",
-            "sed -n '18p' Dockerfile",
-            "echo 'Full Dockerfile head:'",
-            "head -25 Dockerfile"
+            "echo 'Validating Dockerfile...'",
+            "ls -la Dockerfile",
+            "echo 'Starting Docker build process...'"
           ]
         }
         build = {
           commands = [
             "echo 'Building Docker image...'",
             "docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .",
-            "echo 'Docker image built successfully'"
+            "echo 'Docker image built successfully'",
+            "docker images | grep $IMAGE_REPO_NAME"
           ]
         }
       }
@@ -107,7 +106,7 @@ resource "aws_codebuild_project" "wordpress_deploy" {
           commands = [
             "echo 'Logging in to Amazon ECR...'",
             "aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com",
-            "echo 'Preparing Docker image...'"
+            "echo 'ECR login successful'"
           ]
         }
         build = {
@@ -116,6 +115,11 @@ resource "aws_codebuild_project" "wordpress_deploy" {
             "docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG",
             "echo 'Pushing Docker image to ECR...'",
             "docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG",
+            "echo 'Docker image pushed successfully'"
+          ]
+        }
+        post_build = {
+          commands = [
             "echo 'Triggering ASG instance refresh...'",
             "aws autoscaling start-instance-refresh --auto-scaling-group-name $ASG_NAME --strategy Rolling --preferences MinHealthyPercentage=90,InstanceWarmup=300",
             "echo 'Invalidating CloudFront cache...'",
