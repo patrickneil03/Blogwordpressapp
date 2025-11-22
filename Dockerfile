@@ -14,89 +14,89 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*
 
 # PHP session configuration (HTTP-only)
-RUN cat > /usr/local/etc/php/conf.d/sessions.ini <<EOF
-session.save_path = /var/lib/php/sessions
-session.cookie_lifetime = 86400
-session.gc_maxlifetime = 86400
-session.cookie_secure = 0
-session.use_strict_mode = 1
-session.cookie_httponly = 1
-session.cookie_samesite = Lax
-session.name = WORDPRESS_SESSION
-EOF
+RUN printf '%s\n' \
+    'session.save_path = /var/lib/php/sessions' \
+    'session.cookie_lifetime = 86400' \
+    'session.gc_maxlifetime = 86400' \
+    'session.cookie_secure = 0' \
+    'session.use_strict_mode = 1' \
+    'session.cookie_httponly = 1' \
+    'session.cookie_samesite = Lax' \
+    'session.name = WORDPRESS_SESSION' \
+    > /usr/local/etc/php/conf.d/sessions.ini
 
 # Improved Load Balancer Compatibility MU Plugin
-RUN cat > /var/www/html/wp-content/mu-plugins/load-balancer-compat.php <<EOF
-<?php
-/**
- * Plugin Name: Load Balancer Compatibility
- * Description: Respect ALB and CloudFront headers
- * Version: 1.3
- */
-
-// Trust forwarded proto from ALB/CloudFront
-if (isset(\$_SERVER['HTTP_X_FORWARDED_PROTO']) && \$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-    \$_SERVER['HTTPS'] = 'on';
-}
-
-// Trust forwarded host
-if (isset(\$_SERVER['HTTP_X_FORWARDED_HOST'])) {
-    \$_SERVER['HTTP_HOST'] = \$_SERVER['HTTP_X_FORWARDED_HOST'];
-}
-
-// Ensure WordPress respects the forwarded protocol
-if (!defined('FORCE_SSL_ADMIN')) {
-    define('FORCE_SSL_ADMIN', false);
-}
-
-// Set cookie domain for your domain
-if (!defined('COOKIE_DOMAIN')) {
-    define('COOKIE_DOMAIN', 'blog.baylenwebsite.xyz');
-}
-
-// Fix for WordPress redirect loops behind reverse proxies
-if (!defined('WP_HOME')) {
-    define('WP_HOME', 'http://blog.baylenwebsite.xyz');
-}
-if (!defined('WP_SITEURL')) {
-    define('WP_SITEURL', 'http://blog.baylenwebsite.xyz');
-}
-
-// Additional security headers for reverse proxy setups
-if (!defined('CONCATENATE_SCRIPTS')) {
-    define('CONCATENATE_SCRIPTS', false);
-}
-EOF
+RUN printf '%s\n' \
+    '<?php' \
+    '/**' \
+    ' * Plugin Name: Load Balancer Compatibility' \
+    ' * Description: Respect ALB and CloudFront headers' \
+    ' * Version: 1.3' \
+    ' */' \
+    '' \
+    '// Trust forwarded proto from ALB/CloudFront' \
+    'if (isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] === "https") {' \
+    '    $_SERVER["HTTPS"] = "on";' \
+    '}' \
+    '' \
+    '// Trust forwarded host' \
+    'if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {' \
+    '    $_SERVER["HTTP_HOST"] = $_SERVER["HTTP_X_FORWARDED_HOST"];' \
+    '}' \
+    '' \
+    '// Ensure WordPress respects the forwarded protocol' \
+    'if (!defined("FORCE_SSL_ADMIN")) {' \
+    '    define("FORCE_SSL_ADMIN", false);' \
+    '}' \
+    '' \
+    '// Set cookie domain for your domain' \
+    'if (!defined("COOKIE_DOMAIN")) {' \
+    '    define("COOKIE_DOMAIN", "blog.baylenwebsite.xyz");' \
+    '}' \
+    '' \
+    '// Fix for WordPress redirect loops behind reverse proxies' \
+    'if (!defined("WP_HOME")) {' \
+    '    define("WP_HOME", "http://blog.baylenwebsite.xyz");' \
+    '}' \
+    'if (!defined("WP_SITEURL")) {' \
+    '    define("WP_SITEURL", "http://blog.baylenwebsite.xyz");' \
+    '}' \
+    '' \
+    '// Additional security headers for reverse proxy setups' \
+    'if (!defined("CONCATENATE_SCRIPTS")) {' \
+    '    define("CONCATENATE_SCRIPTS", false);' \
+    '}' \
+    > /var/www/html/wp-content/mu-plugins/load-balancer-compat.php
 
 # WordPress configuration for reverse proxy setup
-RUN cat > /var/www/html/wp-config-reverse-proxy.php <<EOF
-<?php
-// Reverse proxy configuration for CloudFront/ALB
-if (isset(\$_SERVER['HTTP_X_FORWARDED_PROTO']) && \$_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
-    \$_SERVER['HTTPS'] = 'on';
-    \$_SERVER['SERVER_PORT'] = 443;
-}
-
-if (isset(\$_SERVER['HTTP_X_FORWARDED_HOST'])) {
-    \$_SERVER['HTTP_HOST'] = \$_SERVER['HTTP_X_FORWARDED_HOST'];
-}
-EOF
+RUN printf '%s\n' \
+    '<?php' \
+    '// Reverse proxy configuration for CloudFront/ALB' \
+    'if (isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] == "https") {' \
+    '    $_SERVER["HTTPS"] = "on";' \
+    '    $_SERVER["SERVER_PORT"] = 443;' \
+    '}' \
+    '' \
+    'if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {' \
+    '    $_SERVER["HTTP_HOST"] = $_SERVER["HTTP_X_FORWARDED_HOST"];' \
+    '}' \
+    > /var/www/html/wp-config-reverse-proxy.php
 
 # Create a custom entrypoint wrapper that includes our reverse proxy config
-RUN cat > /usr/local/bin/custom-entrypoint.sh <<EOF
-#!/bin/bash
-set -e
-
-# Include reverse proxy config in wp-config.php if it exists
-if [ -f /var/www/html/wp-config.php ] && [ -f /var/www/html/wp-config-reverse-proxy.php ]; then
-    if ! grep -q "wp-config-reverse-proxy.php" /var/www/html/wp-config.php; then
-        sed -i '1a require_once(ABSPATH . "wp-config-reverse-proxy.php");' /var/www/html/wp-config.php
-    fi
-fi
-
-# Call the original entrypoint
-exec docker-entrypoint.sh "\$@"
-EOF
+RUN printf '%s\n' \
+    '#!/bin/bash' \
+    'set -e' \
+    '' \
+    '# Include reverse proxy config in wp-config.php if it exists' \
+    'if [ -f /var/www/html/wp-config.php ] && [ -f /var/www/html/wp-config-reverse-proxy.php ]; then' \
+    '    if ! grep -q "wp-config-reverse-proxy.php" /var/www/html/wp-config.php; then' \
+    '        sed -i '\''1a require_once(ABSPATH . "wp-config-reverse-proxy.php");'\'' /var/www/html/wp-config.php' \
+    '    fi' \
+    'fi' \
+    '' \
+    '# Call the original entrypoint' \
+    'exec docker-entrypoint.sh "$@"' \
+    > /usr/local/bin/custom-entrypoint.sh
 
 RUN chmod +x /usr/local/bin/custom-entrypoint.sh
 
