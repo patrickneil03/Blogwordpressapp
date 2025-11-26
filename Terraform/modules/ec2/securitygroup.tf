@@ -36,7 +36,7 @@ resource "aws_security_group" "goingtointernet" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["180.190.225.149/32"]
   }
 
   # Default egress (allow all outbound)

@@ -18,7 +18,7 @@ RUN printf '%s\n' \
     'session.save_path = /var/lib/php/sessions' \
     'session.cookie_lifetime = 86400' \
     'session.gc_maxlifetime = 86400' \
-    'session.cookie_secure = 0' \
+    'session.cookie_secure = 1' \
     'session.use_strict_mode = 1' \
     'session.cookie_httponly = 1' \
     'session.cookie_samesite = Lax' \
@@ -57,10 +57,10 @@ RUN mkdir -p /var/www/html/wp-content/mu-plugins && \
     '' \
     '// Fix for WordPress redirect loops behind reverse proxies' \
     'if (!defined("WP_HOME")) {' \
-    '    define("WP_HOME", "http://blog.baylenwebsite.xyz");' \
+    '    define("WP_HOME", "https://blog.baylenwebsite.xyz");' \
     '}' \
     'if (!defined("WP_SITEURL")) {' \
-    '    define("WP_SITEURL", "http://blog.baylenwebsite.xyz");' \
+    '    define("WP_SITEURL", "https://blog.baylenwebsite.xyz");' \
     '}' \
     '' \
     '// Additional security headers for reverse proxy setups' \
