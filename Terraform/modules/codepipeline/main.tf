@@ -39,7 +39,7 @@ resource "aws_codepipeline" "wordpress_pipeline" {
       provider         = "CodeBuild"
       version          = "1"
       input_artifacts  = ["source_output"]
-      output_artifacts = ["build_output"]  # Pass built image info to next stage
+      output_artifacts = ["build_output"]
 
       configuration = {
         ProjectName = var.codebuild_build_name
@@ -57,7 +57,7 @@ resource "aws_codepipeline" "wordpress_pipeline" {
       owner           = "AWS"
       provider        = "CodeBuild"
       version         = "1"
-      input_artifacts = ["build_output"]  # Uses built image from Build stage
+      input_artifacts = ["source_output"]  # Changed from build_output to source_output
 
       configuration = {
         ProjectName = var.codebuild_deploy_name

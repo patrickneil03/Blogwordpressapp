@@ -46,7 +46,8 @@ resource "aws_iam_role_policy" "codebuild_policy" {
           "s3:GetObject",
           "s3:GetObjectVersion",
           "s3:GetBucketVersioning",
-          "s3:PutObject"
+          "s3:PutObject",
+          "s3:ListBucket"
         ]
         Resource = [
           "${var.codepipeline_artifacts_bucket_arn}",

@@ -5,7 +5,7 @@ resource "aws_security_group" "goingtointernet" {
 
   # Allow inbound HTTP (TCP 80) to anywhere
   ingress {
-    description = "Allow outbound HTTP"
+    description = "Allow Inbound HTTP"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -14,7 +14,7 @@ resource "aws_security_group" "goingtointernet" {
 
    # Allow inbound HTTPS (TCP 443) to anywhere
   ingress {
-    description = "Allow outbound HTTP"
+    description = "Allow Inbound HTTPS"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
@@ -23,16 +23,16 @@ resource "aws_security_group" "goingtointernet" {
 
   # Allow inbound ICMP (all types/codes) to anywhere
   ingress {
-    description = "Allow outbound ICMP"
+    description = "Allow inbound ICMP from my wifi"
     from_port   = -1
     to_port     = -1
     protocol    = "icmp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["180.190.225.149/32"]
   }
 
     # Allow inbound SSH (TCP 22) from anywhere
   ingress {
-    description = "Allow inbound SSH"
+    description = "Allow inbound SSH from my wifi"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"

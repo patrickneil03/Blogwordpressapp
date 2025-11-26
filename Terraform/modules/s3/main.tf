@@ -1,5 +1,6 @@
 resource "aws_s3_bucket" "codepipeline_artifacts" {
   bucket = "wordpress-blog-pipeline-artifacts-${random_id.bucket_suffix.hex}"
+  force_destroy = true  # This allows non-empty bucket deletion
 }
 
 resource "random_id" "bucket_suffix" {

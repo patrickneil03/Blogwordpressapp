@@ -1,4 +1,4 @@
-FROM wordpress:php8.2-apache
+FROM public.ecr.aws/docker/library/wordpress:php8.2-apache
 LABEL maintainer="you@example.com"
 
 ARG WP_CLI_URL="https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar"
