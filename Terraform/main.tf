@@ -26,6 +26,7 @@ module "ec2" {
   vpc_id = module.vpc.vpc_id
   instance_profile_name = module.iam.instance_profile_name
   pub_subnet_ids = module.vpc.pub_subnet_ids
+  ami_id = var.ami_id
 }
 
 module "parameterstore" {

@@ -88,3 +88,8 @@ variable "github_branch" {
 variable "account_id" {
   description = "my current account id for aws account"
 }
+
+variable "ami_id" {
+  description = "the pre baked ami id for my ec2 instances"
+  
+}

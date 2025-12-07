@@ -20,3 +20,7 @@ variable "ami_name_filter" {
 variable "pub_subnet_ids" {
   description = "Public subnets"
 }
+
+variable "ami_id" {
+  description = "the pre baked ami for auto scaling group"
+}
