@@ -70,51 +70,60 @@ RUN mkdir -p /var/www/html/wp-content/mu-plugins && \
     > /var/www/html/wp-content/mu-plugins/load-balancer-compat.php && \
     chown -R www-data:www-data /var/www/html/wp-content/mu-plugins
 
-# WordPress configuration for reverse proxy setup
-RUN printf '%s\n' \
-    '<?php' \
-    '// Reverse proxy configuration for CloudFront/ALB' \
-    'if (isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] == "https") {' \
-    '    $_SERVER["HTTPS"] = "on";' \
-    '    $_SERVER["SERVER_PORT"] = 443;' \
-    '}' \
-    '' \
-    'if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {' \
-    '    $_SERVER["HTTP_HOST"] = $_SERVER["HTTP_X_FORWARDED_HOST"];' \
-    '}' \
-    > /var/www/html/wp-config-reverse-proxy.php
-
 # ============================================
-# SIMPLE FIX: Block WordPress external calls
-# Prevents 30+ second timeouts in private subnet
+# SIMPLE FIX: All configurations in one file
 # ============================================
-RUN echo '<?php \
-// BLOCK EXTERNAL CALLS (No internet access in private subnet) \
-define("WP_HTTP_BLOCK_EXTERNAL", true); \
-// DISABLE UPDATE CHECKS (Will timeout anyway) \
-define("AUTOMATIC_UPDATER_DISABLED", true); \
-define("WP_AUTO_UPDATE_CORE", false); \
-// USE SYSTEM CRON INSTEAD \
-define("DISABLE_WP_CRON", true); \
-?>' > /var/www/html/wp-config-private.php
+RUN cat > /var/www/html/wp-config-docker.php << 'EOF'
+<?php
+// ============================================
+// DOCKER CONFIGURATION FOR PRIVATE SUBNET
+// ============================================
 
-# Create a custom entrypoint wrapper that includes our reverse proxy config
+// BLOCK EXTERNAL CALLS - Prevents 30s timeouts
+define("WP_HTTP_BLOCK_EXTERNAL", true);
+
+// DISABLE UPDATES - No internet access
+define("AUTOMATIC_UPDATER_DISABLED", true);
+define("WP_AUTO_UPDATE_CORE", false);
+
+// USE SYSTEM CRON INSTEAD
+define("DISABLE_WP_CRON", true);
+
+// REVERSE PROXY CONFIGURATION
+if (isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] == "https") {
+    $_SERVER["HTTPS"] = "on";
+    $_SERVER["SERVER_PORT"] = 443;
+}
+if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {
+    $_SERVER["HTTP_HOST"] = $_SERVER["HTTP_X_FORWARDED_HOST"];
+}
+
+// LOAD BALANCER SETTINGS
+if (!defined("FORCE_SSL_ADMIN")) {
+    define("FORCE_SSL_ADMIN", false);
+}
+if (!defined("COOKIE_DOMAIN")) {
+    define("COOKIE_DOMAIN", "blog.baylenwebsite.xyz");
+}
+if (!defined("WP_HOME")) {
+    define("WP_HOME", "https://blog.baylenwebsite.xyz");
+}
+if (!defined("WP_SITEURL")) {
+    define("WP_SITEURL", "https://blog.baylenwebsite.xyz");
+}
+EOF
+
+# Create a SIMPLE entrypoint that always works
 RUN printf '%s\n' \
     '#!/bin/bash' \
     'set -e' \
     '' \
-    '# Include private subnet fix' \
-    'if [ -f /var/www/html/wp-config.php ] && [ -f /var/www/html/wp-config-private.php ]; then' \
-    '    if ! grep -q "wp-config-private.php" /var/www/html/wp-config.php; then' \
-    '        sed -i '\''1a require_once(ABSPATH . "wp-config-private.php");'\'' /var/www/html/wp-config.php' \
-    '    fi' \
-    'fi' \
-    '' \
-    '# Include reverse proxy config in wp-config.php if it exists' \
-    'if [ -f /var/www/html/wp-config.php ] && [ -f /var/www/html/wp-config-reverse-proxy.php ]; then' \
-    '    if ! grep -q "wp-config-reverse-proxy.php" /var/www/html/wp-config.php; then' \
-    '        sed -i '\''2a require_once(ABSPATH . "wp-config-reverse-proxy.php");'\'' /var/www/html/wp-config.php' \
-    '    fi' \
+    '# Always include Docker config if wp-config.php exists' \
+    'if [ -f /var/www/html/wp-config.php ]; then' \
+    '    # Prepend our Docker config to the existing wp-config.php' \
+    '    cat /var/www/html/wp-config-docker.php /var/www/html/wp-config.php > /tmp/wp-config-combined.php' \
+    '    mv /tmp/wp-config-combined.php /var/www/html/wp-config.php' \
+    '    echo "[Docker] Applied private subnet configuration"' \
     'fi' \
     '' \
     '# Call the original entrypoint' \
