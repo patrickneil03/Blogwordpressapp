@@ -73,45 +73,45 @@ RUN mkdir -p /var/www/html/wp-content/mu-plugins && \
 # ============================================
 # SIMPLE FIX: All configurations in one file
 # ============================================
-RUN cat > /var/www/html/wp-config-docker.php << 'EOF'
-<?php
-// ============================================
-// DOCKER CONFIGURATION FOR PRIVATE SUBNET
-// ============================================
-
-// BLOCK EXTERNAL CALLS - Prevents 30s timeouts
-define("WP_HTTP_BLOCK_EXTERNAL", true);
-
-// DISABLE UPDATES - No internet access
-define("AUTOMATIC_UPDATER_DISABLED", true);
-define("WP_AUTO_UPDATE_CORE", false);
-
-// USE SYSTEM CRON INSTEAD
-define("DISABLE_WP_CRON", true);
-
-// REVERSE PROXY CONFIGURATION
-if (isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] == "https") {
-    $_SERVER["HTTPS"] = "on";
-    $_SERVER["SERVER_PORT"] = 443;
-}
-if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {
-    $_SERVER["HTTP_HOST"] = $_SERVER["HTTP_X_FORWARDED_HOST"];
-}
-
-// LOAD BALANCER SETTINGS
-if (!defined("FORCE_SSL_ADMIN")) {
-    define("FORCE_SSL_ADMIN", false);
-}
-if (!defined("COOKIE_DOMAIN")) {
-    define("COOKIE_DOMAIN", "blog.baylenwebsite.xyz");
-}
-if (!defined("WP_HOME")) {
-    define("WP_HOME", "https://blog.baylenwebsite.xyz");
-}
-if (!defined("WP_SITEURL")) {
-    define("WP_SITEURL", "https://blog.baylenwebsite.xyz");
-}
-EOF
+RUN printf '%s\n' \
+    '<?php' \
+    '// ============================================' \
+    '// DOCKER CONFIGURATION FOR PRIVATE SUBNET' \
+    '// ============================================' \
+    '' \
+    '// BLOCK EXTERNAL CALLS - Prevents 30s timeouts' \
+    'define("WP_HTTP_BLOCK_EXTERNAL", true);' \
+    '' \
+    '// DISABLE UPDATES - No internet access' \
+    'define("AUTOMATIC_UPDATER_DISABLED", true);' \
+    'define("WP_AUTO_UPDATE_CORE", false);' \
+    '' \
+    '// USE SYSTEM CRON INSTEAD' \
+    'define("DISABLE_WP_CRON", true);' \
+    '' \
+    '// REVERSE PROXY CONFIGURATION' \
+    'if (isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] == "https") {' \
+    '    $_SERVER["HTTPS"] = "on";' \
+    '    $_SERVER["SERVER_PORT"] = 443;' \
+    '}' \
+    'if (isset($_SERVER["HTTP_X_FORWARDED_HOST"])) {' \
+    '    $_SERVER["HTTP_HOST"] = $_SERVER["HTTP_X_FORWARDED_HOST"];' \
+    '}' \
+    '' \
+    '// LOAD BALANCER SETTINGS' \
+    'if (!defined("FORCE_SSL_ADMIN")) {' \
+    '    define("FORCE_SSL_ADMIN", false);' \
+    '}' \
+    'if (!defined("COOKIE_DOMAIN")) {' \
+    '    define("COOKIE_DOMAIN", "blog.baylenwebsite.xyz");' \
+    '}' \
+    'if (!defined("WP_HOME")) {' \
+    '    define("WP_HOME", "https://blog.baylenwebsite.xyz");' \
+    '}' \
+    'if (!defined("WP_SITEURL")) {' \
+    '    define("WP_SITEURL", "https://blog.baylenwebsite.xyz");' \
+    '}' \
+    > /var/www/html/wp-config-docker.php
 
 # Create a SIMPLE entrypoint that always works
 RUN printf '%s\n' \
