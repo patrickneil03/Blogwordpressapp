@@ -21,6 +21,23 @@ variable "pub_subnet_ids" {
   description = "Public subnets"
 }
 
+variable "app_subnet_ids" {
+  description = "App private subnets"
+}
+
 variable "ami_id" {
   description = "the pre baked ami for auto scaling group"
+}
+
+variable "region" {
+  default = "ap-southeast-1"
+}
+
+variable "account_id_output" {
+  description = "the output of account id"
+}
+
+variable "vpc_cidr" {
+  description = "The CIDR block for the VPC."
+  type        = string
 }

@@ -18,6 +18,7 @@ module "vpc" {
   vpc_cidr = var.vpc_cidr
   Project = var.Project
   Env     = var.Env
+  vpc_endpoint_sg_id = module.ec2.vpc_endpoint_sg_id
   
 }
 
@@ -27,6 +28,9 @@ module "ec2" {
   instance_profile_name = module.iam.instance_profile_name
   pub_subnet_ids = module.vpc.pub_subnet_ids
   ami_id = var.ami_id
+  app_subnet_ids = module.vpc.app_subnet_ids
+  account_id_output = var.account_id
+  vpc_cidr = var.vpc_cidr
 }
 
 module "parameterstore" {

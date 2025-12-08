@@ -17,3 +17,13 @@ output "ecr_repository_url_output" {
 output "cf_zone_id_output" {
   value = module.cloudfront.cf_zone_id
 }
+
+output "ami_id_output" {
+  value = var.ami_id
+  
+}
+
+output "account_id_output" {
+  value = var.account_id
+  
+}

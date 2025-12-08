@@ -26,12 +26,12 @@ output "db_subnet_ids" {
 
 
 output "app_subnet_ids" {
-  description = "A map of App Subnet IDs keyed by their name."
-  value = {
-    for k, s in aws_subnet.named :
-    k => s.id
-    if s.tags.Role == "app" # Filters for subnets tagged as 'app'
-  }
+   description = "List of APP private subnet IDs for EFS, EC2 (App-subnet-A, App-subnet-B, App-subnet-C)"
+  value = [
+    aws_subnet.named["App-subnet-A"].id,
+    aws_subnet.named["App-subnet-B"].id,
+    aws_subnet.named["App-subnet-C"].id,
+  ]
 }
 
 output "pub_subnet_ids" {

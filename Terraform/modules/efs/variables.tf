@@ -17,6 +17,6 @@ variable "Env" {
 }
 
 variable "app_subnet_ids" {
-  description = "A map of App subnet IDs (Name => ID) for EFS mount targets."
-  type        = map(string)
+  type        = list(string)  # ✅ Change from map to list
+  description = "List of app subnet IDs for EFS mount targets"
 }

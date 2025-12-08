@@ -48,3 +48,7 @@ variable "ipv6_index_offset" {
   type    = number
   default = 0
 }
+
+variable "vpc_endpoint_sg_id" {
+  description = "the ID of vpc endpoint security group"
+}

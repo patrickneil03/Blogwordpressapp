@@ -84,3 +84,39 @@ resource "aws_route_table_association" "public_assoc" {
   route_table_id = aws_route_table.public.id
 }
 
+
+
+
+####################################################
+######### PRIVATE ROUTE TABLE ######################
+####################################################
+
+# Create a route table for private subnets (App and DB)
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.blog_vpc.id
+  tags   = merge(local.tags, { Name = "${var.vpc_name}-private-rt" })
+}
+
+# Associate App subnets with private route table
+resource "aws_route_table_association" "app_assoc" {
+  for_each = {
+    for k, s in aws_subnet.named :
+    k => s
+    if contains(["App-subnet-A", "App-subnet-B", "App-subnet-C"], k)
+  }
+
+  subnet_id      = each.value.id
+  route_table_id = aws_route_table.private.id
+}
+
+# Associate DB subnets with private route table
+resource "aws_route_table_association" "db_assoc" {
+  for_each = {
+    for k, s in aws_subnet.named :
+    k => s
+    if contains(["DB-subnet-A", "DB-subnet-B", "DB-subnet-C"], k)
+  }
+
+  subnet_id      = each.value.id
+  route_table_id = aws_route_table.private.id
+}

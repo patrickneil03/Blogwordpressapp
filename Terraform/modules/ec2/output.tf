@@ -1,8 +1,8 @@
-output "security_group_ids" {
+/*output "security_group_ids" {
   description = "The IDs of the security groups attached to the launch template."
   value       = aws_security_group.goingtointernet.id
   
-}
+}*/
 
 output "rds_sg_id" {
   description = "The ID of the RDS security group."
@@ -13,6 +13,12 @@ output "rds_sg_id" {
 output "efs_sg_id" {
   description = "The ID of the EFS security group."
   value       = aws_security_group.efs.id
+  
+}
+
+output "vpc_endpoint_sg_id" {
+  description = "The ID of the EFS security group."
+  value       = aws_security_group.vpc_endpoint.id
   
 }
 
@@ -41,4 +47,8 @@ output "alb_dns_name" {
 
 output "asg_name" {
   value = aws_autoscaling_group.asg_wordpress_blog.name
+}
+
+output "ami_id_output" {
+  value = var.ami_id
 }

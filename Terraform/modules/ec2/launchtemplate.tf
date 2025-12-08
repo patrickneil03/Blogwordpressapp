@@ -9,8 +9,8 @@ resource "aws_launch_template" "wordpress_blog" {
   }
 
   network_interfaces {
-    security_groups             = [aws_security_group.goingtointernet.id]
-    associate_public_ip_address = true
+    security_groups             = [aws_security_group.app.id]
+    associate_public_ip_address = false
   }
 
   lifecycle {
@@ -32,8 +32,8 @@ exec 2>&1
 echo "=== Starting FAST user data script at $(date) ==="
 echo "Using pre-baked AMI - Docker, EFS utils, AWS CLI already installed!"
 
-REGION="ap-southeast-1"
-ACCOUNT_ID="516969219217"
+REGION="${var.region}"
+ACCOUNT_ID="${var.account_id_output}"
 ECR_REPO="wordpress-blog-ecr"
 ECR_URI="$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPO:latest"
 EFS_MOUNT_PATH="/mnt/efs"

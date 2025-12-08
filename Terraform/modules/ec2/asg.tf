@@ -9,7 +9,7 @@ resource "aws_autoscaling_group" "asg_wordpress_blog" {
   target_group_arns = [aws_lb_target_group.blog_asg_tg.arn]
 
   # Using var.pub_subnet_ids as specified, which should contain the list of Public Subnet IDs
-  vpc_zone_identifier = var.pub_subnet_ids
+  vpc_zone_identifier = var.app_subnet_ids
   min_size            = 2
   max_size            = 4
   desired_capacity    = 3

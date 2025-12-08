@@ -18,6 +18,10 @@ locals {
   kms_key_arn = length(trimspace(var.kms_key_id)) > 0 ? var.kms_key_id : "arn:aws:kms:${var.region}:${data.aws_caller_identity.current.account_id}:alias/aws/ssm"
 }
 
+####################################################
+############## IAM ROLE ############################
+####################################################
+
 resource "aws_iam_role" "ec2_blog_role" {
   name = "BlogEC2Role"
 
@@ -33,79 +37,85 @@ resource "aws_iam_role" "ec2_blog_role" {
   })
 
   tags = {
+    Name    = "BlogEC2Role"
     Project = "BLOG"
   }
 }
 
-resource "aws_iam_role_policy_attachment" "efs_attach" {
-  role       = aws_iam_role.ec2_blog_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess"
-}
+####################################################
+############## CUSTOM IAM POLICY ###################
+####################################################
 
-resource "aws_iam_role_policy_attachment" "ssm_attach" {
-  role       = aws_iam_role.ec2_blog_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
-}
-
-resource "aws_iam_role_policy_attachment" "cw_attach" {
-  role       = aws_iam_role.ec2_blog_role.name
-  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-}
-
-resource "aws_iam_role_policy_attachment" "ecr_managed_attach" {
-  role       = aws_iam_role.ec2_blog_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-}
-
-resource "aws_iam_policy" "ec2_ecr_ssm" {
-  name        = "EC2Blog-ECR-SSM-Policy"
-  description = "Allow EC2 to authenticate to ECR, pull images, and read SSM parameters"
+resource "aws_iam_policy" "ec2_blog_policy" {
+  name        = "EC2Blog-Policy"
+  description = "Allow EC2 to access ECR, SSM, EFS, and CloudWatch"
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
+      # ECR Permissions
       {
-        Sid    = "ECRGetAuth"
+        Sid    = "ECRGetAuthToken"
         Effect = "Allow"
         Action = ["ecr:GetAuthorizationToken"]
         Resource = "*"
       },
       {
-        Sid    = "ECRPull"
+        Sid    = "ECRPullImages"
         Effect = "Allow"
         Action = [
           "ecr:BatchCheckLayerAvailability",
           "ecr:GetDownloadUrlForLayer",
           "ecr:BatchGetImage",
-          "ecr:DescribeImages",
-          "ecr:DescribeRepositories",
-          "ecr:ListImages"
+          "ecr:DescribeImages"
         ]
         Resource = var.ecr_repo_arn
       },
+      # SSM Parameter Store Permissions
       {
         Sid    = "SSMReadParameters"
         Effect = "Allow"
         Action = [
           "ssm:GetParameter",
-          "ssm:GetParameters",
-          "ssm:GetParameterHistory",
-          "ssm:DescribeParameters"
+          "ssm:GetParameters"
         ]
         Resource = local.ssm_params_arns
       },
+      # KMS for SSM parameter decryption
       {
-        Sid    = "KMSDecryptForSSM"
+        Sid    = "KMSDecryptSSM"
         Effect = "Allow"
         Action = ["kms:Decrypt"]
         Resource = [local.kms_key_arn]
       },
+      # EFS Permissions (minimal required)
       {
-        Sid    = "ECRRepositoryAccess",
+        Sid    = "EFSMount"
         Effect = "Allow"
         Action = [
-          "ecr:GetRepositoryPolicy",
-          "ecr:DescribeRepositories"
+          "elasticfilesystem:DescribeFileSystems",
+          "elasticfilesystem:DescribeMountTargets"
+        ]
+        Resource = "*"
+      },
+      # CloudWatch Logs (for logging)
+      {
+        Sid    = "CloudWatchLogs"
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogStreams"
+        ]
+        Resource = "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/ec2/wordpress*"
+      },
+      # CloudWatch Metrics
+      {
+        Sid    = "CloudWatchMetrics"
+        Effect = "Allow"
+        Action = [
+          "cloudwatch:PutMetricData"
         ]
         Resource = "*"
       }
@@ -113,12 +123,32 @@ resource "aws_iam_policy" "ec2_ecr_ssm" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "attach_ec2_ecr_ssm" {
+####################################################
+############## ATTACH POLICIES #####################
+####################################################
+
+# Attach custom policy
+resource "aws_iam_role_policy_attachment" "attach_custom_policy" {
   role       = aws_iam_role.ec2_blog_role.name
-  policy_arn = aws_iam_policy.ec2_ecr_ssm.arn
+  policy_arn = aws_iam_policy.ec2_blog_policy.arn
 }
+
+# Optional: Only if you need SSM Session Manager access
+resource "aws_iam_role_policy_attachment" "ssm_core" {
+role       = aws_iam_role.ec2_blog_role.name
+policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+####################################################
+############## INSTANCE PROFILE ####################
+####################################################
 
 resource "aws_iam_instance_profile" "ec2_blog_profile" {
   name = "BlogEC2InstanceProfile"
   role = aws_iam_role.ec2_blog_role.name
+
+  tags = {
+    Name    = "BlogEC2InstanceProfile"
+    Project = "BLOG"
+  }
 }
