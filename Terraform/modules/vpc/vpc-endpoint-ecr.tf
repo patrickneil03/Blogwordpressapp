@@ -59,3 +59,30 @@ resource "aws_vpc_endpoint" "ssm" {
 
   tags = merge(local.tags, { Name = "ssm-endpoint" })
 }
+
+
+# 5. SSMMessages Endpoint (REQUIRED for Session Manager)
+resource "aws_vpc_endpoint" "ssmmessages" {
+  vpc_id              = aws_vpc.blog_vpc.id
+  service_name        = "com.amazonaws.${var.region}.ssmmessages"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+  
+  subnet_ids         = local.app_subnet_ids
+  security_group_ids = [var.vpc_endpoint_sg_id]
+
+  tags = merge(local.tags, { Name = "ssmmessages-endpoint" })
+}
+
+# 6. EC2Messages Endpoint (REQUIRED for Session Manager)
+resource "aws_vpc_endpoint" "ec2messages" {
+  vpc_id              = aws_vpc.blog_vpc.id
+  service_name        = "com.amazonaws.${var.region}.ec2messages"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+  
+  subnet_ids         = local.app_subnet_ids
+  security_group_ids = [var.vpc_endpoint_sg_id]
+
+  tags = merge(local.tags, { Name = "ec2messages-endpoint" })
+}
