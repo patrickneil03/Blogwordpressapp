@@ -1,4 +1,4 @@
-/*
+
 resource "aws_security_group" "goingtointernet" {
   name        = "goingtointernet"
   description = "Allow outbound HTTP and ICMP to the internet"
@@ -37,7 +37,7 @@ resource "aws_security_group" "goingtointernet" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["180.190.225.149/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   # Default egress (allow all outbound)
@@ -49,7 +49,7 @@ resource "aws_security_group" "goingtointernet" {
   }
 
 }
-*/
+
 
 ####################################################
 #############LOAD BALANCER SECURITY GROUP###########

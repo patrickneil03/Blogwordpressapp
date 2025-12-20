@@ -20,7 +20,6 @@ output "db_subnet_ids" {
   value = [
     aws_subnet.named["DB-subnet-A"].id,
     aws_subnet.named["DB-subnet-B"].id,
-    aws_subnet.named["DB-subnet-C"].id,
   ]
 }
 
@@ -30,7 +29,6 @@ output "app_subnet_ids" {
   value = [
     aws_subnet.named["App-subnet-A"].id,
     aws_subnet.named["App-subnet-B"].id,
-    aws_subnet.named["App-subnet-C"].id,
   ]
 }
 
@@ -39,6 +37,5 @@ output "pub_subnet_ids" {
   value = [
     aws_subnet.named["Public-subnet-A"].id,
     aws_subnet.named["Public-subnet-B"].id,
-    aws_subnet.named["Public-subnet-C"].id,
   ]
 }

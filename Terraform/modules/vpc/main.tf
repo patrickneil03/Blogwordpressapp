@@ -3,20 +3,17 @@ data "aws_availability_zones" "available" {
 }
 
 locals {
-  azs = slice(data.aws_availability_zones.available.names, 0, 3)
+  azs = slice(data.aws_availability_zones.available.names, 0, 2)
 
   named_subnets = [
     { name = "Public-subnet-A", cidr_index = 0, type = "public", az = local.azs[0] },
     { name = "Public-subnet-B", cidr_index = 1, type = "public", az = local.azs[1] },
-    { name = "Public-subnet-C", cidr_index = 2, type = "public", az = local.azs[2] },
 
-    { name = "App-subnet-A",    cidr_index = 3, type = "app",    az = local.azs[0] },
-    { name = "App-subnet-B",    cidr_index = 4, type = "app",    az = local.azs[1] },
-    { name = "App-subnet-C",    cidr_index = 5, type = "app",    az = local.azs[2] },
+    { name = "App-subnet-A",    cidr_index = 2, type = "app",    az = local.azs[0] },
+    { name = "App-subnet-B",    cidr_index = 3, type = "app",    az = local.azs[1] },
 
-    { name = "DB-subnet-A",     cidr_index = 6, type = "db",     az = local.azs[0] },
-    { name = "DB-subnet-B",     cidr_index = 7, type = "db",     az = local.azs[1] },
-    { name = "DB-subnet-C",     cidr_index = 8, type = "db",     az = local.azs[2] },
+    { name = "DB-subnet-A",     cidr_index = 4, type = "db",     az = local.azs[0] },
+    { name = "DB-subnet-B",     cidr_index = 5, type = "db",     az = local.azs[1] },
   ]
 
   tags = {
@@ -77,46 +74,110 @@ resource "aws_route_table_association" "public_assoc" {
   for_each = {
     for k, s in aws_subnet.named :
     k => s
-    if contains(["Public-subnet-A","Public-subnet-B","Public-subnet-C"], k)
+    if contains(["Public-subnet-A","Public-subnet-B"], k)
   }
 
   subnet_id      = each.value.id
   route_table_id = aws_route_table.public.id
 }
 
+# Create Elastic IPs for NAT Gateways
+resource "aws_eip" "nat" {
+  count = 2
+  domain = "vpc"
+  
+  tags = merge(local.tags, { 
+    Name = "${var.vpc_name}-nat-eip-${count.index + 1}"
+  })
+}
 
-
+# Create NAT Gateways in public subnets
+resource "aws_nat_gateway" "nat" {
+  count = 2
+  
+  allocation_id = aws_eip.nat[count.index].id
+  # Get the public subnet IDs and assign NAT Gateways to them
+  subnet_id     = element([for k, s in aws_subnet.named : s.id if contains(["Public-subnet-A", "Public-subnet-B"], k)], count.index)
+  
+  tags = merge(local.tags, { 
+    Name = "${var.vpc_name}-nat-gw-${count.index + 1}"
+  })
+  
+  depends_on = [aws_internet_gateway.blog_igw]
+}
 
 ####################################################
-######### PRIVATE ROUTE TABLE ######################
+######### APP SUBNET ROUTE TABLES (WITH NAT) #######
 ####################################################
 
-# Create a route table for private subnets (App and DB)
-resource "aws_route_table" "private" {
+# Create route tables for App subnets WITH NAT Gateway access
+resource "aws_route_table" "app_with_nat_az1" {
   vpc_id = aws_vpc.blog_vpc.id
-  tags   = merge(local.tags, { Name = "${var.vpc_name}-private-rt" })
+  tags   = merge(local.tags, { 
+    Name = "${var.vpc_name}-app-with-nat-rt-az1"
+  })
 }
 
-# Associate App subnets with private route table
-resource "aws_route_table_association" "app_assoc" {
-  for_each = {
-    for k, s in aws_subnet.named :
-    k => s
-    if contains(["App-subnet-A", "App-subnet-B", "App-subnet-C"], k)
-  }
-
-  subnet_id      = each.value.id
-  route_table_id = aws_route_table.private.id
+resource "aws_route_table" "app_with_nat_az2" {
+  vpc_id = aws_vpc.blog_vpc.id
+  tags   = merge(local.tags, { 
+    Name = "${var.vpc_name}-app-with-nat-rt-az2"
+  })
 }
 
-# Associate DB subnets with private route table
-resource "aws_route_table_association" "db_assoc" {
-  for_each = {
-    for k, s in aws_subnet.named :
-    k => s
-    if contains(["DB-subnet-A", "DB-subnet-B", "DB-subnet-C"], k)
-  }
+# Add routes to NAT Gateways for App subnets
+resource "aws_route" "app_az1_to_nat" {
+  route_table_id         = aws_route_table.app_with_nat_az1.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.nat[0].id
+}
 
-  subnet_id      = each.value.id
-  route_table_id = aws_route_table.private.id
+resource "aws_route" "app_az2_to_nat" {
+  route_table_id         = aws_route_table.app_with_nat_az2.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.nat[1].id
+}
+
+# Associate App subnets with NAT-enabled route tables
+resource "aws_route_table_association" "app_assoc_with_nat_az1" {
+  subnet_id      = aws_subnet.named["App-subnet-A"].id
+  route_table_id = aws_route_table.app_with_nat_az1.id
+}
+
+resource "aws_route_table_association" "app_assoc_with_nat_az2" {
+  subnet_id      = aws_subnet.named["App-subnet-B"].id
+  route_table_id = aws_route_table.app_with_nat_az2.id
+}
+
+####################################################
+######### DB SUBNET ROUTE TABLES (NO NAT) ##########
+####################################################
+
+# Create route tables for DB subnets WITHOUT NAT Gateway access
+resource "aws_route_table" "db_no_nat_az1" {
+  vpc_id = aws_vpc.blog_vpc.id
+  tags   = merge(local.tags, { 
+    Name = "${var.vpc_name}-db-no-nat-rt-az1"
+  })
+}
+
+resource "aws_route_table" "db_no_nat_az2" {
+  vpc_id = aws_vpc.blog_vpc.id
+  tags   = merge(local.tags, { 
+    Name = "${var.vpc_name}-db-no-nat-rt-az2"
+  })
+}
+
+# DO NOT add any internet/NAT routes to DB route tables
+# They remain isolated with only local VPC routes
+
+# Associate DB subnets with isolated route tables (no NAT)
+resource "aws_route_table_association" "db_assoc_no_nat_az1" {
+  subnet_id      = aws_subnet.named["DB-subnet-A"].id
+  route_table_id = aws_route_table.db_no_nat_az1.id
+}
+
+resource "aws_route_table_association" "db_assoc_no_nat_az2" {
+  subnet_id      = aws_subnet.named["DB-subnet-B"].id
+  route_table_id = aws_route_table.db_no_nat_az2.id
 }
