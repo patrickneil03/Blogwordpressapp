@@ -125,6 +125,7 @@ resource "aws_route_table" "app_with_nat_az2" {
   })
 }
 
+
 # Add routes to NAT Gateways for App subnets
 resource "aws_route" "app_az1_to_nat" {
   route_table_id         = aws_route_table.app_with_nat_az1.id
