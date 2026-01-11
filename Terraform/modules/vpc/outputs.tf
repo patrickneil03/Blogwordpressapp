@@ -39,3 +39,7 @@ output "pub_subnet_ids" {
     aws_subnet.named["Public-subnet-B"].id,
   ]
 }
+
+output "vpc_name" {
+  value = aws_vpc.blog_vpc.tags["Name"] 
+}

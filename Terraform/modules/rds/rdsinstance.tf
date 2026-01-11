@@ -16,8 +16,8 @@ resource "aws_db_instance" "blogrds" {
   vpc_security_group_ids      = [var.rds_sg_id]
   skip_final_snapshot         = true
   publicly_accessible         = false
-  multi_az                    = false
-  backup_retention_period     = 7
+  multi_az                    = true
+  backup_retention_period     = 1
   deletion_protection         = false
   apply_immediately           = true
   auto_minor_version_upgrade  = true

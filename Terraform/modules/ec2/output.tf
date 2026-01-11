@@ -49,6 +49,22 @@ output "asg_name" {
   value = aws_autoscaling_group.asg_wordpress_blog.name
 }
 
+# Output AMI ID
 output "ami_id_output" {
-  value = var.ami_id
+  value = aws_ami_from_instance.wordpress_ami.id
 }
+
+output "usage" {
+  value = <<-EOT
+  ✅ AMI created: ${aws_ami_from_instance.wordpress_ami.id}
+  
+  Use this in your launch template:
+  
+  resource "aws_launch_template" "wordpress" {
+    image_id = "${aws_ami_from_instance.wordpress_ami.id}"
+    # ... other config
+  }
+  EOT
+}
+
+

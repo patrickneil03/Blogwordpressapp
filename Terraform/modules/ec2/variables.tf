@@ -25,10 +25,6 @@ variable "app_subnet_ids" {
   description = "App private subnets"
 }
 
-variable "ami_id" {
-  description = "the pre baked ami for auto scaling group"
-}
-
 variable "region" {
   default = "ap-southeast-1"
 }
@@ -41,3 +37,11 @@ variable "vpc_cidr" {
   description = "The CIDR block for the VPC."
   type        = string
 }
+
+variable "ami_version" {
+  description = "Version number for the AMI"
+  type        = string
+  default     = "1.0.0"
+}
+
+

@@ -1,7 +1,7 @@
 resource "aws_launch_template" "wordpress_blog" {
   name          = "Wordpress-blog-temp"
   description   = "Launch template with pre-baked AMI"
-  image_id      = var.ami_id # ← CHANGE THIS to your custom AMI ID
+  image_id      = aws_ami_from_instance.wordpress_ami.id # ← CHANGE THIS to your custom AMI ID
   instance_type = "t2.micro"
 
   iam_instance_profile {
