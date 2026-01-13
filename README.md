@@ -117,14 +117,28 @@ This project demonstrates a real-world, production-grade cloud application with:
 git clone https://github.com/patrickneil03/Blogwordpressapp.git
 cd wordpress-blog-app
 
+
+## Configuration
+
+- Create a secrets.auto.tfvars file inside Terraform folder
+
+- Copy paste the following below kindly replace the parameters with your own:
+
+DBPassword = "your_db_password"
+DBRootPassword = "your_db_rootpassword"
+DBUser = "your_db_user"
+DBName = "your_db_name"
+codestar_connection_arn = "your_codestar_connection_arn"
+
+
+---
+
 ### Initialize Terraform
 terraform init
 
 ### Plan the deployment
 terraform plan
 
-# Apply the infrastructure
+## Apply the infrastructure
 terraform apply
 
-# Get the CloudFront URL
-terraform output cloudfront_url
