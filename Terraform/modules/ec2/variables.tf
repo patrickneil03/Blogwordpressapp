@@ -44,4 +44,25 @@ variable "ami_version" {
   default     = "1.0.0"
 }
 
+variable "ecr_api_endpoint_id" {
+  description = "The ecr api endpoint id"
+  type = string
+}
 
+variable "ecr_dkr_endpoint_id" {
+  type = string
+}
+
+variable "s3_endpoint_id" {
+  type = string
+}
+
+variable "efs_mount_target_ids" {
+  type = list(string)
+  description = "List of EFS mount target IDs from the EFS module"
+}
+
+variable "rds_instance_id" {
+  type = string
+  description = "The ID of the RDS instance to establish dependency"
+}

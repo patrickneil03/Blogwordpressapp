@@ -30,6 +30,11 @@ module "ec2" {
   app_subnet_ids = module.vpc.app_subnet_ids
   account_id_output = var.account_id
   vpc_cidr = var.vpc_cidr
+  ecr_api_endpoint_id = module.vpc.ecr_api_endpoint_id
+  ecr_dkr_endpoint_id = module.vpc.ecr_dkr_endpoint_id
+  s3_endpoint_id = module.vpc.s3_endpoint_id
+  efs_mount_target_ids = module.efs.efs_mount_target_ids
+  rds_instance_id = module.rds.rds_instance_id
 }
 
 module "parameterstore" {

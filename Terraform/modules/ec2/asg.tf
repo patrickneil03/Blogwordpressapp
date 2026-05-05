@@ -1,34 +1,40 @@
 resource "aws_autoscaling_group" "asg_wordpress_blog" {
-  name                 = "asg-wordpress-blog"
+  name             = "asg-wordpress-blog-v${var.ami_version}"
+  min_size         = 2
+  max_size         = 4
+  desired_capacity = 3
+  
+  vpc_zone_identifier = var.app_subnet_ids # Private subnets
+  target_group_arns   = [aws_lb_target_group.blog_asg_tg.arn]
+
   launch_template {
     id      = aws_launch_template.wordpress_blog.id
     version = "$Latest"
   }
 
-  # FIX: target_group_arns must be a list, and we reference the ARN attribute
-  target_group_arns = [aws_lb_target_group.blog_asg_tg.arn]
-
-  # Using var.pub_subnet_ids as specified, which should contain the list of Public Subnet IDs
-  vpc_zone_identifier = var.app_subnet_ids
-  min_size            = 2
-  max_size            = 4
-  desired_capacity    = 3
-
-  # Health check settings for connection with the Load Balancer
-  health_check_type         = "ELB" # Changed to ELB to use the Target Group health checks
-  health_check_grace_period = 300
-
-  lifecycle {
-    create_before_destroy = true
-  }
+  # THE FIXES:
+  health_check_type         = "ELB"
+  health_check_grace_period = 600 # 10 minutes buffer
+  
+  # Ensure networking/DB is ready before ASG starts
+  depends_on = [
+    var.ecr_api_endpoint_id,
+    var.ecr_dkr_endpoint_id,
+    var.s3_endpoint_id,
+    var.efs_mount_target_ids,
+    var.rds_instance_id
+  ]
 
   instance_refresh {
     strategy = "Rolling"
     preferences {
       min_healthy_percentage = 50
-      instance_warmup        = 300
+      instance_warmup        = 300 
     }
-    triggers = ["tag"]  # Refresh when tags change
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 
   tag {
@@ -38,16 +44,9 @@ resource "aws_autoscaling_group" "asg_wordpress_blog" {
   }
 }
 
-
-
-
-
-
-#ASG POLICY
-
-# Scale-out policy: add 1 instance
+# --- SCALE OUT POLICY ---
 resource "aws_autoscaling_policy" "asg_scale_out_cpu" {
-  name                   = "asg-wordpress-scale-out-cpu"
+  name                   = "asg-wordpress-scale-out"
   autoscaling_group_name = aws_autoscaling_group.asg_wordpress_blog.name
   policy_type            = "SimpleScaling"
   adjustment_type        = "ChangeInCapacity"
@@ -55,9 +54,9 @@ resource "aws_autoscaling_policy" "asg_scale_out_cpu" {
   cooldown               = 300
 }
 
-# Scale-in policy: remove 1 instance
+# --- SCALE IN POLICY ---
 resource "aws_autoscaling_policy" "asg_scale_in_cpu" {
-  name                   = "asg-wordpress-scale-in-cpu"
+  name                   = "asg-wordpress-scale-in"
   autoscaling_group_name = aws_autoscaling_group.asg_wordpress_blog.name
   policy_type            = "SimpleScaling"
   adjustment_type        = "ChangeInCapacity"
