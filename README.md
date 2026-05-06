@@ -117,7 +117,10 @@ This project demonstrates a real-world, production-grade cloud application with:
 ### Clone the repository for route53 hostedzone
 
 git clone https://github.com/patrickneil03/Route53hostedzone.git
+
+```hcl
 cd Terraform
+```
 
 - Create a terraform.tfvars file inside Terraform folder then replace the parameters with your own.
 
@@ -138,9 +141,9 @@ terraform apply
 ### Clone the repository for Blogwordpress
 git clone https://github.com/patrickneil03/Blogwordpressapp.git
 
-#
+```hcl
 cd Terraform
-
+```
 
 ## Configuration
 
