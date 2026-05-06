@@ -137,8 +137,10 @@ terraform apply
 
 ### Clone the repository for Blogwordpress
 git clone https://github.com/patrickneil03/Blogwordpressapp.git
-cd Terraform
 
+```hcl
+cd Terraform
+```
 
 ## Configuration
 
