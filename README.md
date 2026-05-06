@@ -118,7 +118,7 @@ This project demonstrates a real-world, production-grade cloud application with:
 
 git clone https://github.com/patrickneil03/Route53hostedzone.git
 
-```hcl
+```Bash
 cd Terraform
 ```
 
@@ -141,7 +141,7 @@ terraform apply
 ### Clone the repository for Blogwordpress
 git clone https://github.com/patrickneil03/Blogwordpressapp.git
 
-```hcl
+```Bash
 cd Terraform
 ```
 
