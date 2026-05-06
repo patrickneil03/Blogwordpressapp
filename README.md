@@ -113,7 +113,29 @@ This project demonstrates a real-world, production-grade cloud application with:
 
 ## Quickstart
 
-### Clone the repository
+
+### Clone the repository for route53 hostedzone
+
+git clone https://github.com/patrickneil03/Route53hostedzone.git
+cd Terraform
+
+- Create a terraform.tfvars file inside Terraform folder then replace the parameters with your own.
+
+```hcl
+domain_name = "your_registered_domain_name"
+aws_region = "your_aws_region"
+```
+
+- Apply the changes
+
+```hcl
+terraform init
+terraform plan
+terraform apply
+```
+
+
+### Clone the repository for Blogwordpress
 git clone https://github.com/patrickneil03/Blogwordpressapp.git
 cd Terraform
 
@@ -155,3 +177,14 @@ terraform init
 terraform plan
 terraform apply
 ```
+
+
+## 🙋 About Me
+I'm an aspiring Cloud Engineer passionate about AWS and DevOps.
+This project is part of my hands-on learning journey and cloud portfolio.
+
+[![LinkedIn](https://img.shields.io/badge/-Patrick%27s_LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/patrick-neil-baylen-01b175159)
+
+
+## Certificate
+🧠 AWS Certified Cloud Practitioner
