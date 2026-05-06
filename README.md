@@ -148,7 +148,7 @@ account_id         = "your_aws_acct_ID"
 region = "your_aws_Region"
 ```
 
----
+- Apply the changes
 
 ```hcl
 terraform init
