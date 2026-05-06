@@ -115,7 +115,7 @@ This project demonstrates a real-world, production-grade cloud application with:
 
 ### Clone the repository
 git clone https://github.com/patrickneil03/Blogwordpressapp.git
-cd wordpress-blog-app
+cd Terraform
 
 
 ## Configuration
@@ -124,21 +124,34 @@ cd wordpress-blog-app
 
 - Copy paste the following below kindly replace the parameters with your own:
 
+```hcl
 DBPassword = "your_db_password"
 DBRootPassword = "your_db_rootpassword"
 DBUser = "your_db_user"
 DBName = "your_db_name"
 codestar_connection_arn = "your_codestar_connection_arn"
+```
 
+- Create a terraform.tfvars file inside Terraform folder
+
+```hcl
+vpc_cidr = "10.0.0.0/16"
+Project = "blog"
+Env     = "dev"
+db_engine_version = "8.0.42"
+db_allocated_storage = 20
+db_instance_class = "db.t3.micro"
+github_owner       = "your_github_username"
+github_repo        = "your_github_repo"
+github_branch      = "main"
+account_id         = "your_aws_acct_ID"
+region = "your_aws_Region"
+```
 
 ---
 
-### Initialize Terraform
+```hcl
 terraform init
-
-### Plan the deployment
 terraform plan
-
-## Apply the infrastructure
 terraform apply
-
+```

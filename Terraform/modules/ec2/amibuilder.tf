@@ -45,63 +45,45 @@ resource "aws_security_group" "ami_builder" {
 }
 
 # Create EC2 instance
+# Create EC2 instance
 resource "aws_instance" "ami_builder" {
   ami           = data.aws_ssm_parameter.al2023_latest.value
   instance_type = "t2.micro"
   
-  subnet_id              = data.aws_subnets.default.ids[0]
+  subnet_id                   = data.aws_subnets.default.ids[0]
   associate_public_ip_address = true
+  vpc_security_group_ids      = [aws_security_group.ami_builder.id]
   
-  vpc_security_group_ids = [aws_security_group.ami_builder.id]
+  # ✅ KEY ADDITION: Terminate instead of Stop on shutdown
+  instance_initiated_shutdown_behavior = "terminate"
+  disable_api_termination              = false
   
-  # Allow termination
-  disable_api_termination = false
-  
-  # ✅ IMPROVED: Add at command to ensure shutdown
   user_data = <<-EOF
               #!/bin/bash
               set -xe
-              echo "Starting AMI build at $(date)"
               
-              # Install packages using DNF
+              # Standard updates and installs
               sudo dnf update -y
               sudo dnf install -y docker amazon-efs-utils aws-cli
               
-              # Enable and start Docker
               sudo systemctl enable docker
               sudo systemctl start docker
               
-              # Verify installations
-              docker --version && echo "✓ Docker installed"
-              which mount.efs && echo "✓ EFS utils installed"
-              aws --version && echo "✓ AWS CLI installed"
-              
-              # Clean up
+              # Clean up to keep the AMI small
               sudo dnf clean all
+              sudo rm -rf /var/cache/dnf
               
-              # Create completion marker
-              echo "AMI_BUILD_COMPLETE=$(date)" > /tmp/ami-build-status.txt
-              echo "Packages: docker, amazon-efs-utils, aws-cli" >> /tmp/ami-build-status.txt
-              
-              echo "AMI build completed at $(date)"
-              
-              # ✅ CRITICAL: Force wait and shutdown
-              sleep 120  # Wait 2 minutes to ensure everything is settled
-              echo "Shutting down for AMI creation..."
+              # Sync filesystem to ensure all changes are written
+              sync
+
+              # ✅ Wait a moment for the AWS AMI process to have a clean starting point
+              echo "Build complete. Shutting down to trigger auto-termination..."
+              sleep 60 
               sudo shutdown -h now
               EOF
-  
-  # Root volume
-  root_block_device {
-    volume_size = 8
-    volume_type = "gp3"
-    delete_on_termination = true
-  }
-  
+
   tags = {
-    Name        = "ami-builder"
-    Purpose     = "ami-creation"
-    AutoDestroy = "true"
+    Name = "ami-builder-source"
   }
 }
 

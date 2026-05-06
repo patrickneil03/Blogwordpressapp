@@ -14,7 +14,7 @@ resource "aws_autoscaling_group" "asg_wordpress_blog" {
 
   # THE FIXES:
   health_check_type         = "ELB"
-  health_check_grace_period = 600 # 10 minutes buffer
+  health_check_grace_period = 240
   
   # Ensure networking/DB is ready before ASG starts
   depends_on = [

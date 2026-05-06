@@ -7,6 +7,8 @@ resource "aws_ecr_repository" "wordpress_repo" {
     encryption_type = "AES256"
   }
 
+  depends_on = [var.codepipeline_wordpress_id]
+
   tags = {
     Name = "wordpress-blog-ecr"
   }

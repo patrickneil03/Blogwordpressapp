@@ -88,6 +88,7 @@ module "cloudwatch" {
 
 module "ecr"{
   source = "./modules/ecr"
+  codepipeline_wordpress_id = module.codepipeline.codepipeline_wordpress_id
 }
 
 module "cloudfront"{
