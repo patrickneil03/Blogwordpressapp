@@ -8,5 +8,8 @@
 !config/
 !config/**
 
-# 🎯 FIX: Explicitly allow the entrypoint script through the filter
+# Allow the entrypoint script
 !entrypoint.sh
+
+# 🎯 FIX: Explicitly allow the health check page through the filter
+!health.php
