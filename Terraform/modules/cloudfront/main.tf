@@ -1,9 +1,9 @@
 resource "aws_cloudfront_distribution" "wordpress" {
-  enabled             = true
-  is_ipv6_enabled     = true
-  comment             = "WordPress blog distribution"
-  price_class         = "PriceClass_All"
-  aliases             = ["blog.baylenwebsite.xyz"]
+  enabled         = true
+  is_ipv6_enabled = true
+  comment         = "WordPress blog distribution"
+  price_class     = "PriceClass_All"
+  aliases         = [var.route53_subdomain_name]
 
   origin {
     domain_name = var.alb_dns_name
@@ -20,7 +20,7 @@ resource "aws_cloudfront_distribution" "wordpress" {
     # Add custom header for ALB access
     custom_header {
       name  = "X-Forwarded-Host"
-      value = "blog.baylenwebsite.xyz"
+      value = var.route53_subdomain_name
     }
   }
 
@@ -31,7 +31,7 @@ resource "aws_cloudfront_distribution" "wordpress" {
 
     forwarded_values {
       query_string = true
-      headers      = ["*"]  # Forward all headers
+      headers      = ["*"] # Forward all headers
       cookies {
         forward = "all"
       }
@@ -51,7 +51,7 @@ resource "aws_cloudfront_distribution" "wordpress" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = "arn:aws:acm:us-east-1:516969219217:certificate/8f38af1f-1c6c-482f-8187-681b0adfd186"
+    acm_certificate_arn      = var.cloudfront_certificate_arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2021"
   }
@@ -59,4 +59,8 @@ resource "aws_cloudfront_distribution" "wordpress" {
   tags = {
     Name = "wordpress-blog-cdn"
   }
+
+  depends_on = [
+    var.cloudfront_certificate_arn
+  ]
 }

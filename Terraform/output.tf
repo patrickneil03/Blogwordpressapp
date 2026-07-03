@@ -20,7 +20,7 @@ output "cf_zone_id_output" {
 
 output "account_id_output" {
   value = var.account_id
-  
+
 }
 
 output "ami_id_output" {

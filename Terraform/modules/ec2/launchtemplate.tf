@@ -1,7 +1,7 @@
 resource "aws_launch_template" "wordpress_blog" {
   name          = "Wordpress-blog-temp"
   description   = "Launch template with pre-baked AMI"
-  image_id      = aws_ami_from_instance.wordpress_ami.id # ← CHANGE THIS to your custom AMI ID
+  image_id      = aws_ami_from_instance.wordpress_ami.id
   instance_type = "t2.micro"
 
   iam_instance_profile {
@@ -38,18 +38,21 @@ ECR_REPO="wordpress-blog-ecr"
 ECR_URI="$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$ECR_REPO:latest"
 EFS_MOUNT_PATH="/mnt/efs"
 
+# --- Dynamic Domain Configuration Variable ---
+DOMAIN_NAME="${var.route53_subdomain_name}"
+
 # --- Start Docker (already installed in AMI) ---
 systemctl start docker
 echo "Docker started"
 
-# --- Wait for Docker daemon (fast since already installed) ---
-for i in {1..10}; do  # Reduced from 30 to 10
+# --- Wait for Docker daemon ---
+for i in {1..10}; do
   docker info &>/dev/null && break
   sleep 1
 done
 echo "Docker daemon ready"
 
-# --- Fetch SSM parameters (AWS CLI already installed) ---
+# --- Fetch SSM parameters ---
 fetch_param() { aws ssm get-parameter --region "$REGION" --name "$1" --with-decryption --query 'Parameter.Value' --output text; }
 fetch_param_plain() { aws ssm get-parameter --region "$REGION" --name "$1" --query 'Parameter.Value' --output text; }
 
@@ -64,9 +67,9 @@ echo "ALB DNS: $ALBDNSName"
 echo "DB endpoint: $DBEndpoint"
 test -n "$DBPassword" -a -n "$DBUser" -a -n "$DBName" -a -n "$DBEndpoint" -a -n "$EFSFileSystemID" -a -n "$ALBDNSName"
 
-# --- Mount EFS with retries (EFS utils already installed) ---
+# --- Mount EFS with retries ---
 mkdir -p "$EFS_MOUNT_PATH"
-for i in {1..5}; do  # Reduced from 10 to 5
+for i in {1..5}; do
   if mount -t efs -o tls,_netdev "$EFSFileSystemID:/" "$EFS_MOUNT_PATH"; then
     echo "EFS mounted successfully"
     break
@@ -85,7 +88,7 @@ chmod -R 755 "$EFS_MOUNT_PATH/wp-content"
 aws ecr get-login-password --region "$REGION" | docker login --username AWS --password-stdin "$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com"
 docker pull "$ECR_URI"
 
-# --- Start WordPress container with CloudFront URLs ---
+# --- Start WordPress container with Dynamic Environment Coupling ---
 docker run -d \
   --name wordpress \
   --restart unless-stopped \
@@ -95,37 +98,35 @@ docker run -d \
   -e WORDPRESS_DB_NAME="$DBName" \
   -e WORDPRESS_DB_USER="$DBUser" \
   -e WORDPRESS_DB_PASSWORD="$DBPassword" \
-  -e WP_HOME="http://blog.baylenwebsite.xyz" \
-  -e WP_SITEURL="http://blog.baylenwebsite.xyz" \
+  -e WORDPRESS_DOMAIN="$DOMAIN_NAME" \
+  -e WP_HOME="https://$DOMAIN_NAME" \
+  -e WP_SITEURL="https://$DOMAIN_NAME" \
   "$ECR_URI"
 
 # --- Wait for WordPress ---
 echo "Waiting for WordPress to be ready..."
-for i in {1..30}; do  # Reduced from 60 to 30
-  if curl -fsS --max-time 2 http://localhost/ >/dev/null 2>&1; then
+for i in {1..30}; do
+  if curl -fsS --max-time 2 http://localhost/health.php >/dev/null 2>&1; then
     echo "WordPress is ready"
     break
   fi
   sleep 2
 done
 
-# --- Configure WordPress URLs for CloudFront ---
-sleep 5  # Reduced from 10
+# --- Configure WordPress URLs dynamically using WP-CLI ---
+sleep 5
 if docker exec wordpress wp core is-installed --allow-root 2>/dev/null; then
-  echo "Configuring WordPress for CloudFront..."
-  # Force set the URLs to your custom domain
-  docker exec wordpress wp option update home "http://blog.baylenwebsite.xyz" --allow-root
-  docker exec wordpress wp option update siteurl "http://blog.baylenwebsite.xyz" --allow-root
-  # Clear any redirect caches
+  echo "Configuring WordPress options dynamically..."
+  docker exec wordpress wp option update home "https://$DOMAIN_NAME" --allow-root
+  docker exec wordpress wp option update siteurl "https://$DOMAIN_NAME" --allow-root
   docker exec wordpress wp cache flush --allow-root || true
-  echo "WordPress configured for CloudFront"
+  echo "WordPress database paths synchronized successfully."
 else
-  echo "WordPress not installed yet - URLs set via environment variables"
+  echo "WordPress not fully provisioned yet - environmental abstractions applied successfully"
 fi
 
 echo "=== FAST setup complete at $(date) ==="
-echo "Total boot time reduced by ~2 minutes!"
 docker ps
 EOT
-)
+  )
 }

@@ -14,7 +14,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_high_scale_out" {
     AutoScalingGroupName = var.asg_wordpress_blog_name
   }
 
-  alarm_actions = [var.asg_policy_scale_out_cpu_arn]
+  alarm_actions      = [var.asg_policy_scale_out_cpu_arn]
   treat_missing_data = "notBreaching"
 }
 
@@ -34,6 +34,6 @@ resource "aws_cloudwatch_metric_alarm" "cpu_low_scale_in" {
     AutoScalingGroupName = var.asg_wordpress_blog_name
   }
 
-  alarm_actions = [var.asg_policy_scale_in_cpu_arn]
+  alarm_actions      = [var.asg_policy_scale_in_cpu_arn]
   treat_missing_data = "notBreaching"
 }

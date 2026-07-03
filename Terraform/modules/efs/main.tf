@@ -1,18 +1,18 @@
 
 locals {
-    tags = {
-        Project = var.Project
-        Env     = var.Env
-        Managed = "terraform"
-    }
+  tags = {
+    Project = var.Project
+    Env     = var.Env
+    Managed = "terraform"
+  }
 }
 
 resource "aws_efs_file_system" "blog_efs" {
-  
+
   tags = merge(local.tags, {
     Name = "blog-efs"
   })
-  
+
   # 4. Encryption = false (default, but specified here)
   encrypted = false
 
@@ -25,10 +25,10 @@ resource "aws_efs_file_system" "blog_efs" {
 
 
 resource "aws_efs_mount_target" "blog_mount_targets" {
-  count = length(var.app_subnet_ids)  # ✅ Use count instead
-  
+  count = length(var.app_subnet_ids) # ✅ Use count instead
+
   file_system_id  = aws_efs_file_system.blog_efs.id
-  subnet_id       = var.app_subnet_ids[count.index]  # ✅ Access by index
+  subnet_id       = var.app_subnet_ids[count.index] # ✅ Access by index
   security_groups = [var.efs_sg_id]
 }
 

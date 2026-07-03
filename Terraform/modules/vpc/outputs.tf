@@ -12,7 +12,7 @@ output "named_subnet_ipv6" {
 
 output "vpc_id" {
   value = aws_vpc.blog_vpc.id
-  
+
 }
 
 output "db_subnet_ids" {
@@ -25,7 +25,7 @@ output "db_subnet_ids" {
 
 
 output "app_subnet_ids" {
-   description = "List of APP private subnet IDs for EFS, EC2 (App-subnet-A, App-subnet-B, App-subnet-C)"
+  description = "List of APP private subnet IDs for EFS, EC2 (App-subnet-A, App-subnet-B, App-subnet-C)"
   value = [
     aws_subnet.named["App-subnet-A"].id,
     aws_subnet.named["App-subnet-B"].id,
@@ -41,7 +41,7 @@ output "pub_subnet_ids" {
 }
 
 output "vpc_name" {
-  value = aws_vpc.blog_vpc.tags["Name"] 
+  value = aws_vpc.blog_vpc.tags["Name"]
 }
 
 

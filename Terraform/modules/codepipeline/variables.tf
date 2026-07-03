@@ -1,7 +1,3 @@
-variable "codebuild_build_name" {
-  description = "the name of the codebuild project for build stage for wordpress app"
-}
-
 variable "codebuild_deploy_name" {
   description = "the name of the codebuild project for deploy stage for wordpress app"
 }

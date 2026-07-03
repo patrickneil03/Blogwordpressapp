@@ -2,27 +2,27 @@ variable "DBPassword" {
   description = "The password for the database user."
   type        = string
   sensitive   = true
-  
+
 }
 
 variable "DBRootPassword" {
   description = "The password for the database root user."
   type        = string
   sensitive   = true
-  
+
 }
 
 variable "DBUser" {
   description = "The database username."
   type        = string
-  sensitive = true
+  sensitive   = true
 }
 
 variable "DBName" {
   description = "The name of the database."
   type        = string
-  sensitive = true
-  
+  sensitive   = true
+
 }
 
 
@@ -35,7 +35,7 @@ variable "kms_key_id" {
 variable "efs_id" {
   description = "The EFS Filesystem ID."
   type        = string
- 
+
 }
 
 variable "alb_dns_name" {

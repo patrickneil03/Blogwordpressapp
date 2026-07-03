@@ -37,17 +37,17 @@ resource "aws_ssm_parameter" "db_name" {
 }
 
 resource "aws_ssm_parameter" "db_endpoint" {
-  name          = "${local.base_path}/DBEndpoint"
-  description   = "Database endpoint for WordPress"
-  type          = "String"
-  tier          = "Standard"
-  data_type     = "text"
-  
+  name        = "${local.base_path}/DBEndpoint"
+  description = "Database endpoint for WordPress"
+  type        = "String"
+  tier        = "Standard"
+  data_type   = "text"
+
   # FIX: Use the replace function to find ":3306" at the end of the string
   # and replace it with an empty string ("").
-  value         = replace(var.rds_endpoint, ":3306", "")
-  
-  tags          = { Project = "BLOG" }
+  value = replace(var.rds_endpoint, ":3306", "")
+
+  tags = { Project = "BLOG" }
 }
 
 resource "aws_ssm_parameter" "file_system_id" {

@@ -23,10 +23,10 @@ resource "aws_ecr_lifecycle_policy" "wordpress_policy" {
         rulePriority = 1
         description  = "Expire untagged images after 7 days"
         selection = {
-          tagStatus     = "untagged"
-          countType     = "sinceImagePushed"
-          countUnit     = "days"
-          countNumber   = 7
+          tagStatus   = "untagged"
+          countType   = "sinceImagePushed"
+          countUnit   = "days"
+          countNumber = 7
         }
         action = {
           type = "expire"

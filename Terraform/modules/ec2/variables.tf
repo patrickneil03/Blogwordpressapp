@@ -1,7 +1,7 @@
 variable "vpc_id" {
   description = "The ID of the VPC."
   type        = string
-  
+
 }
 
 
@@ -46,7 +46,7 @@ variable "ami_version" {
 
 variable "ecr_api_endpoint_id" {
   description = "The ecr api endpoint id"
-  type = string
+  type        = string
 }
 
 variable "ecr_dkr_endpoint_id" {
@@ -58,11 +58,22 @@ variable "s3_endpoint_id" {
 }
 
 variable "efs_mount_target_ids" {
-  type = list(string)
+  type        = list(string)
   description = "List of EFS mount target IDs from the EFS module"
 }
 
 variable "rds_instance_id" {
-  type = string
+  type        = string
   description = "The ID of the RDS instance to establish dependency"
+}
+
+
+variable "route53_subdomain_name" {
+  type        = string
+  description = "The subdomain name for the Wordpress blog"
+}
+
+variable "alb_certificate_arn" {
+  type        = string
+  description = "The ARN of the SSL certificate for the ALB"
 }

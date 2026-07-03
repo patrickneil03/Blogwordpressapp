@@ -13,7 +13,7 @@ resource "aws_security_group" "goingtointernet" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-   # Allow inbound HTTPS (TCP 443) to anywhere
+  # Allow inbound HTTPS (TCP 443) to anywhere
   ingress {
     description = "Allow Inbound HTTPS"
     from_port   = 443
@@ -31,7 +31,7 @@ resource "aws_security_group" "goingtointernet" {
     cidr_blocks = ["180.190.225.149/32"]
   }
 
-    # Allow inbound SSH (TCP 22) from anywhere
+  # Allow inbound SSH (TCP 22) from anywhere
   ingress {
     description = "Allow inbound SSH from my wifi"
     from_port   = 22
@@ -192,17 +192,17 @@ resource "aws_security_group" "vpc_endpoint" {
 
   # Allow HTTPS from app instances
   ingress {
-    description = "Allow HTTPS from VPC CIDR"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
+    description     = "Allow HTTPS from VPC CIDR"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
     security_groups = [aws_security_group.app.id]
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
     security_groups = [aws_security_group.app.id]
   }
 

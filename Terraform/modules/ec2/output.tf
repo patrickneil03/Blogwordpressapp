@@ -7,37 +7,37 @@
 output "rds_sg_id" {
   description = "The ID of the RDS security group."
   value       = aws_security_group.rds.id
-  
+
 }
 
 output "efs_sg_id" {
   description = "The ID of the EFS security group."
   value       = aws_security_group.efs.id
-  
+
 }
 
 output "vpc_endpoint_sg_id" {
   description = "The ID of the EFS security group."
   value       = aws_security_group.vpc_endpoint.id
-  
+
 }
 
 output "asg_policy_scale_out_cpu_arn" {
   description = "The ARN of the ASG scale-out CPU policy."
   value       = aws_autoscaling_policy.asg_scale_out_cpu.arn
-  
+
 }
 
 output "asg_policy_scale_in_cpu_arn" {
   description = "The ARN of the ASG scale-in CPU policy."
   value       = aws_autoscaling_policy.asg_scale_in_cpu.arn
-  
+
 }
 
 output "asg_wordpress_blog_name" {
   description = "The name of the Auto Scaling Group for Wordpress blog."
   value       = aws_autoscaling_group.asg_wordpress_blog.name
-  
+
 }
 
 output "alb_dns_name" {

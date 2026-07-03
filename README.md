@@ -113,37 +113,10 @@ This project demonstrates a real-world, production-grade cloud application with:
 
 ## Quickstart
 
-
-### Clone the repository for route53 hostedzone
-
-git clone https://github.com/patrickneil03/Route53hostedzone.git
-
-```Bash
-cd Terraform
-```
-
-- Create a terraform.tfvars file inside Terraform folder then replace the parameters with your own.
-
-```hcl
-domain_name = "your_registered_domain_name"
-aws_region = "your_aws_region"
-```
-
-- Apply the changes
-
-```hcl
-terraform init
-terraform plan
-terraform apply
-```
-
-
-### Clone the repository for Blogwordpress
+### Clone the repository
 git clone https://github.com/patrickneil03/Blogwordpressapp.git
-
-```Bash
 cd Terraform
-```
+
 
 ## Configuration
 
@@ -151,45 +124,21 @@ cd Terraform
 
 - Copy paste the following below kindly replace the parameters with your own:
 
-```hcl
 DBPassword = "your_db_password"
 DBRootPassword = "your_db_rootpassword"
 DBUser = "your_db_user"
 DBName = "your_db_name"
 codestar_connection_arn = "your_codestar_connection_arn"
-```
 
-- Create a terraform.tfvars file inside Terraform folder
 
-```hcl
-vpc_cidr = "10.0.0.0/16"
-Project = "blog"
-Env     = "dev"
-db_engine_version = "8.0.42"
-db_allocated_storage = 20
-db_instance_class = "db.t3.micro"
-github_owner       = "your_github_username"
-github_repo        = "your_github_repo"
-github_branch      = "main"
-account_id         = "your_aws_acct_ID"
-region = "your_aws_Region"
-```
+---
 
-- Apply the changes
-
-```hcl
+### Initialize Terraform
 terraform init
+
+### Plan the deployment
 terraform plan
+
+## Apply the infrastructure
 terraform apply
-```
 
-
-## 🙋 About Me
-I'm an aspiring Cloud Engineer passionate about AWS and DevOps.
-This project is part of my hands-on learning journey and cloud portfolio.
-
-[![LinkedIn](https://img.shields.io/badge/-Patrick%27s_LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/patrick-neil-baylen-01b175159)
-
-
-## Certificate
-🧠 AWS Certified Cloud Practitioner

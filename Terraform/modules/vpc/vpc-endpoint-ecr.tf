@@ -16,7 +16,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
   service_name        = "com.amazonaws.${var.region}.ecr.api"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
-  
+
   subnet_ids         = local.app_subnet_ids
   security_group_ids = [var.vpc_endpoint_sg_id]
 
@@ -29,7 +29,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
   service_name        = "com.amazonaws.${var.region}.ecr.dkr"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
-  
+
   subnet_ids         = local.app_subnet_ids
   security_group_ids = [var.vpc_endpoint_sg_id]
 
@@ -42,7 +42,7 @@ resource "aws_vpc_endpoint" "s3" {
   vpc_id            = aws_vpc.blog_vpc.id
   service_name      = "com.amazonaws.${var.region}.s3"
   vpc_endpoint_type = "Gateway"
-  
+
   # Add routes to both App route tables
   route_table_ids = [
     aws_route_table.app_with_nat_az1.id,
@@ -58,7 +58,7 @@ resource "aws_vpc_endpoint" "ssm" {
   service_name        = "com.amazonaws.${var.region}.ssm"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
-  
+
   subnet_ids         = local.app_subnet_ids
   security_group_ids = [var.vpc_endpoint_sg_id]
 
@@ -71,7 +71,7 @@ resource "aws_vpc_endpoint" "ssmmessages" {
   service_name        = "com.amazonaws.${var.region}.ssmmessages"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
-  
+
   subnet_ids         = local.app_subnet_ids
   security_group_ids = [var.vpc_endpoint_sg_id]
 
@@ -84,7 +84,7 @@ resource "aws_vpc_endpoint" "ec2messages" {
   service_name        = "com.amazonaws.${var.region}.ec2messages"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
-  
+
   subnet_ids         = local.app_subnet_ids
   security_group_ids = [var.vpc_endpoint_sg_id]
 
@@ -97,7 +97,7 @@ resource "aws_vpc_endpoint" "logs" {
   service_name        = "com.amazonaws.${var.region}.logs"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
-  
+
   subnet_ids         = local.app_subnet_ids
   security_group_ids = [var.vpc_endpoint_sg_id]
 

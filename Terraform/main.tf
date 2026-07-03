@@ -2,126 +2,173 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 4.0.0"
+      version = "~> 5.0"
     }
   }
-  
 }
 
 provider "aws" {
   region = var.region
-  
+
+}
+
+provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1"
 }
 
 module "vpc" {
-  source = "./modules/vpc"
-  vpc_cidr = var.vpc_cidr
-  Project = var.Project
-  Env     = var.Env
+  source             = "./modules/vpc"
+  vpc_cidr           = var.vpc_cidr
+  Project            = var.Project
+  Env                = var.Env
   vpc_endpoint_sg_id = module.ec2.vpc_endpoint_sg_id
-  
+
 }
 
 module "ec2" {
-  source = "./modules/ec2"
-  vpc_id = module.vpc.vpc_id
-  instance_profile_name = module.iam.instance_profile_name
-  pub_subnet_ids = module.vpc.pub_subnet_ids
-  app_subnet_ids = module.vpc.app_subnet_ids
-  account_id_output = var.account_id
-  vpc_cidr = var.vpc_cidr
-  ecr_api_endpoint_id = module.vpc.ecr_api_endpoint_id
-  ecr_dkr_endpoint_id = module.vpc.ecr_dkr_endpoint_id
-  s3_endpoint_id = module.vpc.s3_endpoint_id
-  efs_mount_target_ids = module.efs.efs_mount_target_ids
-  rds_instance_id = module.rds.rds_instance_id
+  source                 = "./modules/ec2"
+  vpc_id                 = module.vpc.vpc_id
+  instance_profile_name  = module.iam.instance_profile_name
+  pub_subnet_ids         = module.vpc.pub_subnet_ids
+  app_subnet_ids         = module.vpc.app_subnet_ids
+  account_id_output      = var.account_id
+  vpc_cidr               = var.vpc_cidr
+  ecr_api_endpoint_id    = module.vpc.ecr_api_endpoint_id
+  ecr_dkr_endpoint_id    = module.vpc.ecr_dkr_endpoint_id
+  s3_endpoint_id         = module.vpc.s3_endpoint_id
+  efs_mount_target_ids   = module.efs.efs_mount_target_ids
+  rds_instance_id        = module.rds.rds_instance_id
+  route53_subdomain_name = var.route53_subdomain_name
+  alb_certificate_arn    = aws_acm_certificate_validation.alb_cert.certificate_arn
 }
 
 module "parameterstore" {
-  source = "./modules/parameterstore"
+  source         = "./modules/parameterstore"
   DBPassword     = var.DBPassword
   DBRootPassword = var.DBRootPassword
   DBUser         = var.DBUser
   DBName         = var.DBName
   efs_id         = module.efs.efs_id
   alb_dns_name   = module.ec2.alb_dns_name
-  rds_endpoint   = module.rds.rds_endpoint 
+  rds_endpoint   = module.rds.rds_endpoint
 }
 
 module "iam" {
-  source = "./modules/iam"
-  ecr_repo_arn = module.ecr.ecr_repo_arn
+  source                            = "./modules/iam"
+  ecr_repo_arn                      = module.ecr.ecr_repo_arn
   codepipeline_artifacts_bucket_arn = module.s3.codepipeline_artifacts_bucket_arn
-  codestar_connection_arn = var.codestar_connection_arn
-  account_id = var.account_id
+  codestar_connection_arn           = var.codestar_connection_arn
+  account_id                        = var.account_id
 
 }
 
 module "rds" {
-  source = "./modules/rds"
-  db_subnet_ids = module.vpc.db_subnet_ids
-  rds_sg_id = module.ec2.rds_sg_id
-  DBUser         = var.DBUser
-  DBPassword     = var.DBPassword
-  db_engine_version = var.db_engine_version
+  source               = "./modules/rds"
+  db_subnet_ids        = module.vpc.db_subnet_ids
+  rds_sg_id            = module.ec2.rds_sg_id
+  DBUser               = var.DBUser
+  DBPassword           = var.DBPassword
+  db_engine_version    = var.db_engine_version
   db_allocated_storage = var.db_allocated_storage
-  db_instance_class = var.db_instance_class
-  DBName = var.DBName
+  db_instance_class    = var.db_instance_class
+  DBName               = var.DBName
 
 }
 
 module "efs" {
-  source = "./modules/efs"
-  efs_sg_id = module.ec2.efs_sg_id
-  Project = var.Project
-  Env     = var.Env
+  source         = "./modules/efs"
+  efs_sg_id      = module.ec2.efs_sg_id
+  Project        = var.Project
+  Env            = var.Env
   app_subnet_ids = module.vpc.app_subnet_ids
 }
 
 module "cloudwatch" {
-  source = "./modules/cloudwatch"
-  asg_wordpress_blog_name = module.ec2.asg_wordpress_blog_name
+  source                       = "./modules/cloudwatch"
+  asg_wordpress_blog_name      = module.ec2.asg_wordpress_blog_name
   asg_policy_scale_out_cpu_arn = module.ec2.asg_policy_scale_out_cpu_arn
-  asg_policy_scale_in_cpu_arn = module.ec2.asg_policy_scale_in_cpu_arn
-  
+  asg_policy_scale_in_cpu_arn  = module.ec2.asg_policy_scale_in_cpu_arn
+
 }
 
-module "ecr"{
-  source = "./modules/ecr"
+module "ecr" {
+  source                    = "./modules/ecr"
   codepipeline_wordpress_id = module.codepipeline.codepipeline_wordpress_id
 }
 
-module "cloudfront"{
-  source = "./modules/cloudfront"
-  alb_dns_name = module.ec2.alb_dns_name
+module "cloudfront" {
+  source                 = "./modules/cloudfront"
+  alb_dns_name           = module.ec2.alb_dns_name
+  route53_subdomain_name = var.route53_subdomain_name
+  cloudfront_certificate_arn = module.acm.cloudfront_certificate_arn
+
+  providers = {
+    aws           = aws
+    aws.us_east_1 = aws.us_east_1
+  }
+
+  depends_on = [
+    aws_acm_certificate_validation.cloudfront_cert
+  ]
 }
 
-module "route53"{
-  source = "./modules/route53"
-  cf_domain_name = module.cloudfront.cf_domain_name
-  cf_zone_id = module.cloudfront.cf_zone_id
+
+
+module "route53" {
+  source                               = "./modules/route53"
+  cf_domain_name                       = module.cloudfront.cf_domain_name
+  cf_zone_id                           = module.cloudfront.cf_zone_id
+  route53_domain_name                  = var.route53_domain_name
+  route53_subdomain_name               = var.route53_subdomain_name
+  cloudfront_domain_validation_options = module.acm.cloudfront_domain_validation_options
+  alb_domain_validation_options        = module.acm.alb_domain_validation_options
 }
 
-module "s3"{
+module "s3" {
   source = "./modules/s3"
 }
 
-module "codebuild"{
-  source = "./modules/codebuild"
+module "codebuild" {
+  source             = "./modules/codebuild"
   codebuild_role_arn = module.iam.codebuild_role_arn
   cf_distribution_id = module.cloudfront.cf_distribution_id
-  account_id = var.account_id
-  region = var.region
-  asg_name = module.ec2.asg_name
+  account_id         = var.account_id
+  region             = var.region
+  asg_name           = module.ec2.asg_name
 }
 
-module "codepipeline"{
-  source = "./modules/codepipeline"
-  codepipeline_role_arn = module.iam.codepipeline_role_arn
+module "codepipeline" {
+  source                  = "./modules/codepipeline"
+  codepipeline_role_arn   = module.iam.codepipeline_role_arn
   codestar_connection_arn = var.codestar_connection_arn
-  github_repo = var.github_repo
-  artifacts_bucket = module.s3.artifacts_bucket
-  codebuild_build_name = module.codebuild.codebuild_build_name
-  codebuild_deploy_name = module.codebuild.codebuild_deploy_name
-  github_owner = var.github_owner
+  github_repo             = var.github_repo
+  artifacts_bucket        = module.s3.artifacts_bucket
+  codebuild_deploy_name   = module.codebuild.codebuild_deploy_name
+  github_owner            = var.github_owner
+}
+
+
+module "acm" {
+  source                 = "./modules/acm"
+  route53_domain_name    = var.route53_domain_name
+  route53_subdomain_name = var.route53_subdomain_name
+
+  providers = {
+    aws           = aws
+    aws.us_east_1 = aws.us_east_1
+  }
+}
+
+# Handles the final approval lock for Singapore ALB
+resource "aws_acm_certificate_validation" "alb_cert" {
+  certificate_arn         = module.acm.alb_certificate_arn
+  validation_record_fqdns = module.route53.alb_validation_fqdns
+}
+
+# Handles the final approval lock for N. Virginia CloudFront
+resource "aws_acm_certificate_validation" "cloudfront_cert" {
+  provider                = aws.us_east_1
+  certificate_arn         = module.acm.cloudfront_certificate_arn
+  validation_record_fqdns = module.route53.cloudfront_validation_fqdns
 }

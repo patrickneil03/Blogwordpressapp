@@ -3,7 +3,7 @@ resource "aws_autoscaling_group" "asg_wordpress_blog" {
   min_size         = 2
   max_size         = 4
   desired_capacity = 3
-  
+
   vpc_zone_identifier = var.app_subnet_ids # Private subnets
   target_group_arns   = [aws_lb_target_group.blog_asg_tg.arn]
 
@@ -15,7 +15,7 @@ resource "aws_autoscaling_group" "asg_wordpress_blog" {
   # THE FIXES:
   health_check_type         = "ELB"
   health_check_grace_period = 240
-  
+
   # Ensure networking/DB is ready before ASG starts
   depends_on = [
     var.ecr_api_endpoint_id,
@@ -29,7 +29,7 @@ resource "aws_autoscaling_group" "asg_wordpress_blog" {
     strategy = "Rolling"
     preferences {
       min_healthy_percentage = 50
-      instance_warmup        = 300 
+      instance_warmup        = 300
     }
   }
 

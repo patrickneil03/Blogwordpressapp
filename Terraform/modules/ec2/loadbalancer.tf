@@ -19,12 +19,16 @@ resource "aws_lb_listener" "https" {
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = "arn:aws:acm:ap-southeast-1:516969219217:certificate/40f576b6-3df0-4e31-82b2-79e9a3e2c9a5"
+  certificate_arn   = var.alb_certificate_arn
 
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.blog_asg_tg.arn
   }
+
+  depends_on = [
+    var.alb_certificate_arn
+  ]
 }
 
 # HTTP listener that redirects to HTTPS

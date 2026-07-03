@@ -2,32 +2,32 @@ variable "region" {
   description = "The AWS region to create resources in."
   type        = string
   default     = "ap-southeast-1"
-  
+
 }
 
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC."
   type        = string
-  
+
 }
 
 variable "Project" {
   description = "The project name."
   type        = string
-  
+
 }
 
 variable "Env" {
   description = "The environment name."
   type        = string
-  
+
 }
 
 variable "DBPassword" {
   description = "The password for the database user."
   type        = string
   sensitive   = true
-  
+
 }
 
 variable "DBRootPassword" {
@@ -39,13 +39,13 @@ variable "DBRootPassword" {
 variable "DBUser" {
   description = "The database username."
   type        = string
-  sensitive = true
+  sensitive   = true
 }
 
 variable "DBName" {
   description = "The name of the database."
   type        = string
-  sensitive = true
+  sensitive   = true
 }
 
 variable "db_engine_version" {
@@ -57,19 +57,19 @@ variable "db_engine_version" {
 variable "db_allocated_storage" {
   description = "The allocated storage in gigabytes."
   type        = number
-  
+
 }
 
 variable "db_instance_class" {
   description = "The instance class for the RDS instance."
   type        = string
-  
+
 }
 
 variable "codestar_connection_arn" {
   description = "The ARN of the CodeStar connection."
   type        = string
-  sensitive = true
+  sensitive   = true
 }
 
 variable "github_owner" {
@@ -82,9 +82,17 @@ variable "github_repo" {
 
 variable "github_branch" {
   description = "the branch to use in the github repo of wordpress app"
-  
+
 }
 
 variable "account_id" {
   description = "my current account id for aws account"
+}
+
+variable "route53_domain_name" {
+  description = "domain name for route53"
+}
+
+variable "route53_subdomain_name" {
+  description = "subdomain name for route53"
 }

@@ -22,14 +22,14 @@ resource "aws_security_group" "ami_builder" {
   description = "AMI builder security group"
   vpc_id      = data.aws_vpc.default.id
 
-   ingress {
+  ingress {
     description = "Allow inbound SSH"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  
+
   # Allow all outbound
   egress {
     from_port   = 0
@@ -37,7 +37,7 @@ resource "aws_security_group" "ami_builder" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  
+
   tags = {
     Name    = "ami-builder-sg"
     Purpose = "temporary"
@@ -49,15 +49,15 @@ resource "aws_security_group" "ami_builder" {
 resource "aws_instance" "ami_builder" {
   ami           = data.aws_ssm_parameter.al2023_latest.value
   instance_type = "t2.micro"
-  
+
   subnet_id                   = data.aws_subnets.default.ids[0]
   associate_public_ip_address = true
   vpc_security_group_ids      = [aws_security_group.ami_builder.id]
-  
+
   # ✅ KEY ADDITION: Terminate instead of Stop on shutdown
   instance_initiated_shutdown_behavior = "terminate"
   disable_api_termination              = false
-  
+
   user_data = <<-EOF
               #!/bin/bash
               set -xe
@@ -90,7 +90,7 @@ resource "aws_instance" "ami_builder" {
 # ✅ SIMPLEST FIX: Wait for instance to stop
 resource "null_resource" "wait_for_shutdown" {
   depends_on = [aws_instance.ami_builder]
-  
+
   provisioner "local-exec" {
     command = <<-EOT
       echo "Waiting for instance to shutdown (max 5 minutes)..."
@@ -104,13 +104,13 @@ resource "aws_ami_from_instance" "wordpress_ami" {
   name               = "wordpress-docker-efs-v${var.ami_version}"
   description        = "AMI with Docker, EFS utils, and AWS CLI pre-installed"
   source_instance_id = aws_instance.ami_builder.id
-  
+
   # ✅ CRITICAL: Set to false to ensure clean state
   snapshot_without_reboot = false
-  
+
   # ✅ SIMPLEST FIX: Wait for shutdown before creating AMI
   depends_on = [null_resource.wait_for_shutdown]
-  
+
   tags = {
     Name     = "wordpress-docker-efs"
     Version  = var.ami_version

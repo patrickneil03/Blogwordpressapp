@@ -77,7 +77,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
         Effect = "Allow"
         Action = [
           "logs:CreateLogGroup",
-          "logs:CreateLogStream", 
+          "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
         Resource = [

@@ -29,9 +29,9 @@ resource "aws_iam_role" "ec2_blog_role" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
+        Effect    = "Allow"
         Principal = { Service = "ec2.amazonaws.com" }
-        Action = "sts:AssumeRole"
+        Action    = "sts:AssumeRole"
       }
     ]
   })
@@ -55,9 +55,9 @@ resource "aws_iam_policy" "ec2_blog_policy" {
     Statement = [
       # ECR Permissions
       {
-        Sid    = "ECRGetAuthToken"
-        Effect = "Allow"
-        Action = ["ecr:GetAuthorizationToken"]
+        Sid      = "ECRGetAuthToken"
+        Effect   = "Allow"
+        Action   = ["ecr:GetAuthorizationToken"]
         Resource = "*"
       },
       {
@@ -85,9 +85,9 @@ resource "aws_iam_policy" "ec2_blog_policy" {
       },
       # KMS for SSM parameter decryption
       {
-        Sid    = "KMSDecryptSSM"
-        Effect = "Allow"
-        Action = ["kms:Decrypt"]
+        Sid      = "KMSDecryptSSM"
+        Effect   = "Allow"
+        Action   = ["kms:Decrypt"]
         Resource = [local.kms_key_arn]
       },
       # EFS Permissions (minimal required)
@@ -137,8 +137,8 @@ resource "aws_iam_role_policy_attachment" "attach_custom_policy" {
 
 # Optional: Only if you need SSM Session Manager access
 resource "aws_iam_role_policy_attachment" "ssm_core" {
-role       = aws_iam_role.ec2_blog_role.name
-policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  role       = aws_iam_role.ec2_blog_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 ####################################################
