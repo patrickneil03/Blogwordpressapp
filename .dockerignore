@@ -4,6 +4,9 @@
 # Only include the Dockerfile
 !Dockerfile
 
-# 🎯 FIX: Explicitly allow the config folder and everything inside it
+# Allow the config folder contents
 !config/
 !config/**
+
+# 🎯 FIX: Explicitly allow the entrypoint script through the filter
+!entrypoint.sh
