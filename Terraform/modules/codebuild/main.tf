@@ -1,6 +1,6 @@
 resource "aws_codebuild_project" "wordpress_deploy" {
   name          = "wordpress-blog-deploy"
-  description   = "Unified build, push to ECR, and Fargate deploy trigger project"
+  description   = "Unified build, push to ECR, and ASG Instance Refresh trigger project"
   service_role  = var.codebuild_role_arn
   build_timeout = 15
 
@@ -34,14 +34,10 @@ resource "aws_codebuild_project" "wordpress_deploy" {
       name  = "CLOUDFRONT_ID"
       value = var.cf_distribution_id
     }
-    # REPLACED ASG_NAME WITH ECS VARIABLES
+    # 🎯 FIX: Replaced ECS variables with your Auto Scaling Group Name
     environment_variable {
-      name  = "ECS_CLUSTER_NAME"
-      value = "wordpress-prod-cluster"
-    }
-    environment_variable {
-      name  = "ECS_SERVICE_NAME"
-      value = "wordpress-service"
+      name  = "ASG_NAME"
+      value = var.asg_name
     }
   }
 
@@ -67,11 +63,12 @@ resource "aws_codebuild_project" "wordpress_deploy" {
         }
         post_build = {
           commands = [
-            "echo 'Triggering ECS Fargate rolling deployment...'",
-            "aws ecs update-service --cluster $ECS_CLUSTER_NAME --service $ECS_SERVICE_NAME --force-new-deployment --region $AWS_DEFAULT_REGION",
+            # 🎯 FIX: Replaced ecs update-service with ASG start-instance-refresh
+            "echo 'Triggering Auto Scaling Group Instance Refresh rolling deployment...'",
+            "aws autoscaling start-instance-refresh --auto-scaling-group-name $ASG_NAME --preferences '{\"MinHealthyPercentage\": 50, \"InstanceWarmup\": 300}' --region $AWS_DEFAULT_REGION",
             "echo 'Invalidating CloudFront caches...'",
             "aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_ID --paths '/*'",
-            "echo 'Deployment to AWS Fargate processed successfully!'"
+            "echo 'Deployment rolling update to EC2 ASG processed successfully!'"
           ]
         }
       }

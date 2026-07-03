@@ -1,5 +1,9 @@
 # Ignore EVERYTHING by default
 *
 
-# Only include the Dockerfile (no other files are needed)
+# Only include the Dockerfile
 !Dockerfile
+
+# 🎯 FIX: Explicitly allow the config folder and everything inside it
+!config/
+!config/**
