@@ -39,7 +39,8 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
       {
         Effect = "Allow"
         Action = [
-          "codestar-connections:UseConnection"
+          "codestar-connections:UseConnection",
+          "codestar-connections:PassConnection"
         ]
         Resource = var.codestar_connection_arn
       },
@@ -49,7 +50,7 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
           "codebuild:BatchGetBuilds",
           "codebuild:StartBuild"
         ]
-        Resource = "*"
+        Resource = [var.coldebuild_wordpress_blog_arn]
       }
     ]
   })

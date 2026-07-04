@@ -98,7 +98,7 @@ resource "aws_iam_policy" "ec2_blog_policy" {
           "elasticfilesystem:DescribeFileSystems",
           "elasticfilesystem:DescribeMountTargets"
         ]
-        Resource = "*"
+        Resource = [var.efs_wordpress_blog_arn]
       },
       # CloudWatch Logs (for logging)
       {

@@ -68,3 +68,10 @@ output "usage" {
 }
 
 
+output "asg_arn" {
+  description = "The ARN of the Auto Scaling Group for Wordpress blog."
+  value       = aws_autoscaling_group.asg_wordpress_blog.arn
+
+}
+
+

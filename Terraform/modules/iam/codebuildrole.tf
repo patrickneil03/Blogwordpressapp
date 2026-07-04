@@ -22,10 +22,16 @@ resource "aws_iam_role_policy" "codebuild_policy" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
+      # 1. ECR Global Login Token (Must be "*")
+      {
+        Effect   = "Allow"
+        Action   = ["ecr:GetAuthorizationToken"]
+        Resource = "*"
+      },
+      # 2. Scope Down Read/Write Actions to just your ECR Repo
       {
         Effect = "Allow"
         Action = [
-          "ecr:GetAuthorizationToken",
           "ecr:BatchCheckLayerAvailability",
           "ecr:GetDownloadUrlForLayer",
           "ecr:GetRepositoryPolicy",
@@ -38,8 +44,10 @@ resource "aws_iam_role_policy" "codebuild_policy" {
           "ecr:CompleteLayerUpload",
           "ecr:PutImage"
         ]
-        Resource = "*"
+        # 🎯 FIX: Explicitly targets your repo resource
+        Resource = [var.ecr_repo_arn] 
       },
+      # 3. Secure S3 Artifact Interaction
       {
         Effect = "Allow"
         Action = [
@@ -54,13 +62,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
           "${var.codepipeline_artifacts_bucket_arn}/*"
         ]
       },
-      {
-        Effect = "Allow"
-        Action = [
-          "cloudfront:CreateInvalidation"
-        ]
-        Resource = "*"
-      },
+      # 4. Cleaned & Combined Strict CloudWatch Logging
       {
         Effect = "Allow"
         Action = [
@@ -68,31 +70,40 @@ resource "aws_iam_role_policy" "codebuild_policy" {
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
+        # 🎯 FIX: Consolidated and kept strictly limited to your project path
         Resource = [
-          "arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/codebuild/wordpress-blog-build",
-          "arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/codebuild/wordpress-blog-build:*"
+          "arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/codebuild/wordpress-blog-deploy",
+          "arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/codebuild/wordpress-blog-deploy:*"
         ]
       },
+      # 5. Targeted Auto Scaling Actions
       {
         Effect = "Allow"
         Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
+          "autoscaling:StartInstanceRefresh"
         ]
-        Resource = [
-          "arn:aws:logs:${var.region}:${var.account_id}:log-group:/aws/codebuild/*"
-        ]
+        # 🎯 FIX: CodeBuild can now only mutate your explicit target ASG
+        Resource = [var.asg_arn]
       },
-      # ADD AUTO SCALING PERMISSIONS FOR INSTANCE REFRESH
+      # 6. Global ASG Read Operations (Required for tracking refresh status)
       {
         Effect = "Allow"
         Action = [
-          "autoscaling:StartInstanceRefresh",
           "autoscaling:DescribeInstanceRefreshes",
           "autoscaling:DescribeAutoScalingGroups"
         ]
         Resource = "*"
+      },
+
+      # 7. Secure CloudFront Cache Invalidation
+      {
+        Sid    = "CloudFrontInvalidation"
+        Effect = "Allow"
+        Action = [
+          "cloudfront:CreateInvalidation"
+        ]
+        # 🎯 FIX: Explicitly target the distribution ID from your error log
+        Resource = ["arn:aws:cloudfront::${var.account_id}:distribution/${var.cf_distribution_id}"]
       }
     ]
   })

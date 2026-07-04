@@ -26,3 +26,22 @@ variable "codepipeline_artifacts_bucket_arn" {
 variable "account_id" {
   description = "account id of aws account for wordpress blog"
 }
+
+variable "asg_arn" {
+  description = "ARN of the Auto Scaling Group for Wordpress blog"
+}
+
+variable "coldebuild_wordpress_blog_arn" {
+  description = "ARN of the CodeBuild project for Wordpress blog"
+
+}
+
+variable "efs_wordpress_blog_arn" {
+  description = "ARN of the EFS filesystem for Wordpress blog"
+
+}
+
+variable "cf_distribution_id" {
+  description = "ID of the CloudFront distribution for Wordpress blog"
+
+}

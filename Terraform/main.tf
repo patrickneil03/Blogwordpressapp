@@ -60,6 +60,10 @@ module "iam" {
   codepipeline_artifacts_bucket_arn = module.s3.codepipeline_artifacts_bucket_arn
   codestar_connection_arn           = var.codestar_connection_arn
   account_id                        = var.account_id
+  asg_arn                           = module.ec2.asg_arn
+  efs_wordpress_blog_arn              = module.efs.efs_wordpress_blog_arn
+  coldebuild_wordpress_blog_arn       = module.codebuild.coldebuild_wordpress_blog_arn
+  cf_distribution_id                = module.cloudfront.cf_distribution_id
 
 }
 
